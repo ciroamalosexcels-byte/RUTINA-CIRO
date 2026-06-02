@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Rutina Diaria</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F5F2EC; --ink: #1A1814; --ink-soft: #5A5650; --ink-faint: #A8A49E;
+    --teal: #0F6E56; --teal-light: #E1F5EE; --teal-mid: #1D9E75;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --amber: #854F0B; --amber-light: #FAEEDA; --amber-mid: #EF9F27;
+    --border: rgba(26,24,20,0.1); --border-strong: rgba(26,24,20,0.2);
+    --radius: 14px; --shadow: 0 2px 12px rgba(26,24,20,0.07);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--ink); color: var(--cream); padding: 1.25rem 1.5rem 0; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .header-left h1 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; font-weight: 400; letter-spacing: -0.02em; }
+  .header-left p { font-size: 12px; color: rgba(245,242,236,0.45); margin-top: 1px; }
+  .reloj-wrap { text-align: right; }
+  .reloj { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -0.03em; line-height: 1; color: var(--cream); }
+  .reloj-tarea { font-size: 11px; color: rgba(245,242,236,0.5); margin-top: 2px; max-width: 160px; text-align: right; line-height: 1.3; }
+  .tabs { max-width: 680px; margin: 1rem auto 0; display: flex; gap: 6px; }
+  .tab { background: none; border: 1px solid rgba(245,242,236,0.2); border-bottom: none; color: rgba(245,242,236,0.6); padding: 6px 18px; border-radius: 99px 99px 0 0; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .tab.active { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+  .tab:not(.active):hover { background: rgba(245,242,236,0.1); color: var(--cream); }
+
+  main { max-width: 680px; margin: 0 auto; padding: 1.5rem; }
+  .view { display: none; } .view.active { display: block; }
+  .seccion { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin: 1.5rem 0 10px; display: flex; align-items: center; gap: 8px; }
+  .seccion::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* BLOQUE */
+  .bloque { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 14px; transition: box-shadow 0.2s, border-color 0.3s, background 0.3s; animation: fadeUp 0.4s ease both; position: relative; overflow: hidden; }
+  .bloque:hover { box-shadow: var(--shadow); }
+  .bloque.completado { opacity: 0.4; }
+  .bloque.completado .titulo { text-decoration: line-through; }
+
+  /* HIGHLIGHT — tarea activa ahora */
+  .bloque.activo {
+    border-color: var(--teal-mid) !important;
+    background: linear-gradient(135deg, #f0fdf8 0%, white 60%);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.12), var(--shadow);
+  }
+  .bloque.activo .hora { color: var(--teal); font-weight: 700; }
+  .bloque.activo::before {
+    content: '▶ AHORA';
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    background: var(--teal-light);
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+  /* tarea próxima */
+  .bloque.proximo {
+    border-color: rgba(29,158,117,0.3);
+    background: #fafffe;
+  }
+  .bloque.proximo::before {
+    content: 'PRÓXIMO';
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    background: var(--cream);
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .hora { font-size: 12px; font-weight: 500; color: var(--ink-faint); min-width: 48px; padding-top: 3px; transition: color 0.3s; }
+  .icono { font-size: 22px; min-width: 30px; text-align: center; }
+  .contenido { flex: 1; }
+  .titulo { font-size: 15px; font-weight: 500; color: var(--ink); margin: 0 0 3px; }
+  .detalle { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; margin-top: 7px; }
+  .tag-verde { background: var(--teal-light); color: var(--teal); }
+  .tag-azul { background: var(--blue-light); color: var(--blue); }
+  .tag-naranja { background: var(--amber-light); color: var(--amber); }
+  .check-btn { background: none; border: 1.5px solid var(--border-strong); border-radius: 50%; width: 26px; height: 26px; min-width: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.2s; margin-top: 2px; color: transparent; flex-shrink: 0; }
+  .check-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+  .check-btn.done { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+
+  /* POMODORO */
+  .pom-card { background: var(--ink); color: var(--cream); border-radius: var(--radius); padding: 2rem; text-align: center; margin-bottom: 1.5rem; animation: fadeUp 0.4s ease both; }
+  .pom-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(245,242,236,0.4); margin-bottom: 1rem; }
+  .pom-time { font-family: 'DM Serif Display', serif; font-size: 5rem; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem; }
+  .pom-sub { font-size: 13px; color: rgba(245,242,236,0.4); margin-bottom: 1.5rem; }
+  .pom-modos { display: flex; gap: 8px; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .pom-modo { background: rgba(245,242,236,0.08); border: 1px solid rgba(245,242,236,0.15); color: rgba(245,242,236,0.55); padding: 5px 14px; border-radius: 99px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .pom-modo.active { background: rgba(245,242,236,0.15); border-color: rgba(245,242,236,0.5); color: var(--cream); }
+  .pom-prog-wrap { width:100%; height:4px; background:rgba(245,242,236,0.12); border-radius:99px; margin:1.25rem 0 0.5rem; overflow:hidden; }
+  .pom-prog-bar { height:100%; background:var(--teal-mid); border-radius:99px; transition:width 1s linear; width:100%; }
+  .pom-ses { font-size: 12px; color: rgba(245,242,236,0.3); margin-top: 4px; }
+  .pom-controls { display: flex; gap: 10px; justify-content: center; margin-top: 1.25rem; }
+  .pom-btn { background: rgba(245,242,236,0.1); border: 1px solid rgba(245,242,236,0.2); color: var(--cream); padding: 10px 24px; border-radius: 99px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .pom-btn.primary { background: var(--teal-mid); border-color: var(--teal-mid); }
+
+  /* CLIENTES */
+  .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 12px; animation: fadeUp 0.4s ease both; }
+  .card-titulo { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .card-sub { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+  .pills-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .pill { flex: 1; min-width: 70px; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
+  .pill .pnum { font-size: 1.4rem; font-family: 'DM Serif Display', serif; line-height: 1; }
+  .pill .plbl { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+  .barra-wrap { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin: 10px 0 4px; }
+  .barra-fill { height: 100%; border-radius: 99px; transition: width 0.6s; }
+  .cnt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
+  .cnt-num { font-family: 'DM Serif Display', serif; font-size: 2.5rem; line-height: 1; }
+  .cnt-btns { display: flex; gap: 6px; }
+  .cnt-btn { background: none; border: 1px solid var(--border-strong); border-radius: 8px; width: 36px; height: 36px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; color: var(--ink); font-family: 'DM Sans', sans-serif; }
+  .cnt-btn:hover { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal); }
+
+  /* CALENDARIO */
+  .cal-mes-titulo { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--ink); margin-bottom: 10px; }
+  .cal-lbl-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 3px; }
+  .cal-lbl { text-align: center; font-size: 10px; font-weight: 600; color: var(--ink-faint); padding: 2px 0; }
+  .cal-lbl.dom { color: #d0cdc8; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cdia { aspect-ratio: 1; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; transition: all 0.15s; }
+  .cdia.dom { color: #d0cdc8; background: #f9f8f6; }
+  .cdia.fuera-periodo { color: #ddd; font-size: 11px; }
+  .cdia.laboral { cursor: pointer; border: 1px solid var(--border); color: var(--ink); }
+  .cdia.laboral:hover { border-color: var(--teal-mid); background: var(--teal-light); color: var(--teal); }
+  .cdia.hoy { border: 2px solid var(--teal-mid) !important; font-weight: 700; color: var(--teal); background: var(--teal-light); }
+  .cdia.pasado { background: #f5f4f1; color: #c5c2bc; border-color: transparent; cursor: default; }
+  .cdia.pasado:hover { background: #f5f4f1; color: #c5c2bc; border-color: transparent; }
+  .cdia.visitado { background: var(--teal-mid) !important; color: white !important; border-color: var(--teal) !important; }
+  .cdia.cliente { background: var(--amber-mid) !important; color: white !important; border-color: var(--amber) !important; }
+  .leyenda { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .ley-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-soft); }
+  .ley-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .cal-sep { margin: 14px 0 10px; border: none; border-top: 1px solid var(--border); }
+
+  .notif { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--cream); padding: 12px 24px; border-radius: 99px; font-size: 14px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
+  .notif.show { transform: translateX(-50%) translateY(0); }
+  .footer-space { height: 2rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <h1>Mi Rutina Diaria</h1>
+      <p id="fecha-hoy"></p>
+    </div>
+    <div class="reloj-wrap">
+      <div class="reloj" id="reloj-display">--:--</div>
+      <div class="reloj-tarea" id="reloj-tarea">—</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="cambiarTab('rutina',this)">Rutina</button>
+    <button class="tab" onclick="cambiarTab('pomodoro',this)">Pomodoro</button>
+    <button class="tab" onclick="cambiarTab('clientes',this)">Clientes</button>
+  </div>
+</header>
+
+<main>
+<!-- RUTINA -->
+<div id="tab-rutina" class="view active">
+  <div class="seccion">Rutina matutina</div>
+
+  <div class="bloque" data-desde="7:30" data-hasta="7:35" style="animation-delay:.05s">
+    <span class="hora">7:30</span><span class="icono">⏰</span>
+    <div class="contenido"><p class="titulo">Despertar</p><p class="detalle">Levantarse puntual. Sin snooze.</p><span class="tag tag-verde">Inicio del día</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="7:35" data-hasta="7:45" style="animation-delay:.1s">
+    <span class="hora">7:35</span><span class="icono">🏃</span>
+    <div class="contenido"><p class="titulo">Ejercicio físico (~10 min)</p><p class="detalle">10 abdominales · 10 sentadillas · 10 laterales izq · 10 laterales der · 10 elevaciones de brazos</p><span class="tag tag-verde">Movimiento</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="7:45" data-hasta="7:48" style="animation-delay:.15s">
+    <span class="hora">7:45</span><span class="icono">💧</span>
+    <div class="contenido"><p class="titulo">Hidratación</p><p class="detalle">2 vasos de agua</p></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="7:48" data-hasta="8:10" style="animation-delay:.2s">
+    <span class="hora">7:48</span><span class="icono">🚿</span>
+    <div class="contenido"><p class="titulo">Baño + Skincare</p><p class="detalle">Necesidades · Ducha · Rutina de skincare</p></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="8:10" data-hasta="8:20" style="animation-delay:.25s">
+    <span class="hora">8:10</span><span class="icono">👔</span>
+    <div class="contenido"><p class="titulo">Vestirse como líder</p><p class="detalle">Camisa · Corbata o trombón · Pantalón de traje · Zapatos formales</p><span class="tag tag-verde">Presencia profesional</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="8:20" data-hasta="8:40" style="animation-delay:.3s">
+    <span class="hora">8:20</span><span class="icono">☕</span>
+    <div class="contenido"><p class="titulo">Desayuno</p><p class="detalle">Hot cake · Té o malta con maca peruana</p></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="seccion">Bloque de trabajo — sistemas</div>
+
+  <div class="bloque" data-desde="8:40" data-hasta="9:10" style="animation-delay:.35s">
+    <span class="hora">8:40</span><span class="icono">👥</span>
+    <div class="contenido"><p class="titulo">Reunión de equipo</p><p class="detalle">Biomarketing & Bioestrategia — 20 a 30 minutos</p><span class="tag tag-azul">Reunión</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="9:10" data-hasta="12:30" style="animation-delay:.4s">
+    <span class="hora">9:10</span><span class="icono">⚙️</span>
+    <div class="contenido"><p class="titulo">Mejora de sistemas con Claude</p><p class="detalle">Biomarketing & Bioestrategia · 2 a 3 horas de trabajo profundo</p><span class="tag tag-azul">Trabajo profundo</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="seccion">Bloque de ventas</div>
+
+  <div class="bloque" data-desde="12:30" data-hasta="13:30" style="animation-delay:.45s">
+    <span class="hora">12:30</span><span class="icono">🍽️</span>
+    <div class="contenido"><p class="titulo">Almuerzo + pausa</p><p class="detalle">Descanso para recargar antes del bloque comercial</p></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="bloque" data-desde="13:30" data-hasta="23:59" style="animation-delay:.5s">
+    <span class="hora">13:30</span><span class="icono">📞</span>
+    <div class="contenido"><p class="titulo">Visitas y contactos estratégicos</p><p class="detalle">Meta: 30 contactos → 6 clientes mínimos · Biomarketing o Bioestrategia</p><span class="tag tag-naranja">Cierre de clientes</span></div>
+    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  </div>
+
+  <div class="footer-space"></div>
+</div>
+
+<!-- POMODORO -->
+<div id="tab-pomodoro" class="view">
+  <div style="height:1rem"></div>
+  <div class="pom-card">
+    <div class="pom-label">Técnica Pomodoro</div>
+    <div class="pom-modos">
+      <button class="pom-modo active" onclick="setModo(25,'Trabajo profundo',this)">25 min — trabajo</button>
+      <button class="pom-modo" onclick="setModo(5,'Descanso corto',this)">5 min — pausa</button>
+      <button class="pom-modo" onclick="setModo(15,'Descanso largo',this)">15 min — pausa larga</button>
+    </div>
+    <div class="pom-time" id="pom-display">25:00</div>
+    <div class="pom-sub" id="pom-estado">Trabajo profundo — listos para arrancar</div>
+    <div class="pom-prog-wrap"><div class="pom-prog-bar" id="pom-barra"></div></div>
+    <div class="pom-ses" id="pom-ses">Sesión 1 de hoy · 0 completadas</div>
+    <div class="pom-controls">
+      <button class="pom-btn" onclick="resetPom()">↺ Reiniciar</button>
+      <button class="pom-btn primary" id="pom-toggle" onclick="togglePom()">▶ Arrancar</button>
+    </div>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;color:var(--ink-soft);line-height:1.7"><strong>¿Cómo funciona?</strong><br>
+    1. Elegí una tarea (ej: mejora de sistemas).<br>
+    2. Arrancá el temporizador de 25 minutos.<br>
+    3. Trabajá sin interrupciones hasta que termine.<br>
+    4. Tomá 5 minutos de descanso.<br>
+    5. Cada 4 pomodoros, descansá 15 minutos.</p>
+  </div>
+  <div class="footer-space"></div>
+</div>
+
+<!-- CLIENTES -->
+<div id="tab-clientes" class="view">
+  <div style="height:1rem"></div>
+  <div class="pills-row" id="pills-row"></div>
+  <div class="card">
+    <div class="card-titulo">Clientes cerrados</div>
+    <div class="card-sub">Meta: 6 mínimos · 28 may – 28 jun · Biomarketing & Bioestrategia</div>
+    <div class="cnt-row">
+      <div><div class="cnt-num" id="num-clientes">0</div><div style="font-size:12px;color:var(--ink-faint);margin-top:2px">de 6 objetivo</div></div>
+      <div class="cnt-btns">
+        <button class="cnt-btn" onclick="cambiarClientes(-1)">−</button>
+        <button class="cnt-btn" onclick="cambiarClientes(1)">+</button>
+      </div>
+    </div>
+    <div class="barra-wrap"><div class="barra-fill" id="barra-cl" style="width:0%;background:var(--amber-mid)"></div></div>
+    <div style="font-size:12px;color:var(--ink-faint)" id="pct-cl">0% del objetivo</div>
+  </div>
+  <div class="card" id="cal-container">
+    <div class="card-titulo">Calendario de ventas</div>
+    <div class="card-sub" style="margin-bottom:12px">28 may – 28 jun · Domingos libres · tocá un día para marcar visita</div>
+    <div id="cal-inner"></div>
+    <div class="leyenda">
+      <div class="ley-item"><div class="ley-dot" style="background:var(--teal-light);border:1.5px solid var(--teal-mid)"></div>Hoy</div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--teal-mid)"></div>Visita</div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--amber-mid)"></div>Cliente cerrado</div>
+      <div class="ley-item"><div class="ley-dot" style="background:#f5f4f1;border:1px solid #ddd"></div>Dom / pasado</div>
+    </div>
+  </div>
+  <div class="footer-space"></div>
+</div>
+</main>
+<div class="notif" id="notif"></div>
+
+<script>
+// ── FECHAS FIJAS ──
+const HOY   = new Date(2026, 5, 1);  // 1 jun 2026 — lunes (getDay()===1 ✓)
+const INICIO = new Date(2026, 4, 28); // 28 may 2026
+const FIN    = new Date(2026, 5, 28); // 28 jun 2026
+const DIAS_NOM  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES_NOM = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+document.getElementById('fecha-hoy').textContent = DIAS_NOM[HOY.getDay()] + ', ' + HOY.getDate() + ' de ' + MESES_NOM[HOY.getMonth()];
+
+// ── RELOJ + HIGHLIGHT ──
+function minutosDesdeMedianoche(h, m) { return h * 60 + m; }
+
+function parsearHora(str) {
+  const [h, m] = str.split(':').map(Number);
+  return minutosDesdeMedianoche(h, m);
+}
+
+function actualizarReloj() {
+  const ahora = new Date();
+  const h = ahora.getHours();
+  const m = ahora.getMinutes();
+  const s = ahora.getSeconds();
+  const minActual = minutosDesdeMedianoche(h, m);
+
+  // Mostrar reloj con segundos parpadeantes
+  const sep = s % 2 === 0 ? ':' : '<span style="opacity:0.3">:</span>';
+  document.getElementById('reloj-display').innerHTML =
+    String(h).padStart(2,'0') + sep + String(m).padStart(2,'0');
+
+  // Encontrar tarea activa y próxima
+  const bloques = document.querySelectorAll('#tab-rutina .bloque');
+  let activoIdx = -1;
+  let proximoIdx = -1;
+
+  bloques.forEach((b, i) => {
+    b.classList.remove('activo', 'proximo');
+    const desde = parsearHora(b.dataset.desde);
+    const hasta  = parsearHora(b.dataset.hasta);
+    if (minActual >= desde && minActual < hasta) {
+      activoIdx = i;
+    }
+  });
+
+  // Próximo = el bloque inmediatamente después del activo (o el primero si aún no arrancó)
+  if (activoIdx >= 0) {
+    bloques[activoIdx].classList.add('activo');
+    if (activoIdx + 1 < bloques.length) proximoIdx = activoIdx + 1;
+  } else {
+    // Buscar el primero que todavía no empezó
+    for (let i = 0; i < bloques.length; i++) {
+      const desde = parsearHora(bloques[i].dataset.desde);
+      if (minActual < desde) { proximoIdx = i; break; }
+    }
+  }
+
+  if (proximoIdx >= 0) bloques[proximoIdx].classList.add('proximo');
+
+  // Texto debajo del reloj
+  let textoTarea = '—';
+  if (activoIdx >= 0) {
+    textoTarea = bloques[activoIdx].querySelector('.titulo').textContent;
+  } else if (proximoIdx >= 0) {
+    const desdeMin = parsearHora(bloques[proximoIdx].dataset.desde);
+    const diff = desdeMin - minActual;
+    textoTarea = 'En ' + diff + ' min: ' + bloques[proximoIdx].querySelector('.titulo').textContent;
+  }
+  document.getElementById('reloj-tarea').textContent = textoTarea;
+
+  // Campanitas si cambió la tarea activa
+  const claveActiva = activoIdx >= 0 ? bloques[activoIdx].dataset.desde : null;
+  if (ultimaAreaActiva !== null && claveActiva !== ultimaAreaActiva) {
+    tocarCampanitas();
+  }
+  ultimaAreaActiva = claveActiva;
+}
+
+// ── SONIDO DE CAMPANITAS ──
+function tocarCampanitas() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Tres notas: Mi5, Sol#5, Si5 (acorde de Mi mayor, ascendente)
+    const notas = [659.25, 830.61, 987.77];
+    notas.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      // Cada nota empieza 0.18s después de la anterior
+      const start = ctx.currentTime + i * 0.18;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.35, start + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.7);
+      osc.start(start);
+      osc.stop(start + 0.7);
+    });
+  } catch(e) {}
+}
+
+let ultimaAreaActiva = null;
+
+// Ejecutar inmediatamente y cada segundo
+actualizarReloj();
+setInterval(actualizarReloj, 1000);
+
+// ── TABS ──
+function cambiarTab(id, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CHECK ──
+function toggleCheck(btn) {
+  btn.classList.toggle('done');
+  btn.closest('.bloque').classList.toggle('completado');
+}
+
+// ── POMODORO ──
+let pomTotal=25*60, pomRest=25*60, pomInt=null, pomOn=false, pomDone=0, pomLabel='Trabajo profundo';
+function fmtT(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function updPom(){ document.getElementById('pom-display').textContent=fmtT(pomRest); document.getElementById('pom-barra').style.width=((pomTotal-pomRest)/pomTotal*100)+'%'; }
+function setModo(min,lbl,btn){ document.querySelectorAll('.pom-modo').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); pomTotal=min*60; pomRest=pomTotal; pomLabel=lbl; pomOn=false; clearInterval(pomInt); document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=lbl+' — listos para arrancar'; updPom(); }
+function togglePom(){ if(pomOn){ clearInterval(pomInt); pomOn=false; document.getElementById('pom-toggle').textContent='▶ Continuar'; document.getElementById('pom-estado').textContent=pomLabel+' — pausado'; } else { pomOn=true; document.getElementById('pom-toggle').textContent='⏸ Pausar'; document.getElementById('pom-estado').textContent=pomLabel+' — en curso'; pomInt=setInterval(()=>{ pomRest--; updPom(); if(pomRest<=0){ clearInterval(pomInt); pomOn=false; pomDone++; document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent='¡Completado! Descansá.'; document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; mostrarNotif('🎉 ¡Pomodoro listo! Tomá un descanso.'); } },1000); document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; } }
+function resetPom(){ clearInterval(pomInt); pomOn=false; pomRest=pomTotal; document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=pomLabel+' — listos para arrancar'; updPom(); }
+updPom();
+
+// ── CLIENTES ──
+let clientes = 0;
+let calEstado = {};
+function fkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function mismaFecha(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+function esPasado(d){ return d<HOY&&!mismaFecha(d,HOY); }
+
+function cambiarClientes(delta){
+  clientes=Math.max(0,Math.min(20,clientes+delta));
+  document.getElementById('num-clientes').textContent=clientes;
+  const pct=Math.min(100,Math.round(clientes/6*100));
+  document.getElementById('barra-cl').style.width=pct+'%';
+  document.getElementById('pct-cl').textContent=pct+'% del objetivo';
+  actualizarPills();
+  if(clientes>=6) mostrarNotif('🎯 ¡Meta de 6 clientes alcanzada!');
+}
+
+function contarLaboralesFuturos(){
+  let count=0, d=new Date(HOY);
+  while(d<=FIN){ if(d.getDay()!==0) count++; d.setDate(d.getDate()+1); }
+  return count;
+}
+
+function actualizarPills(){
+  const diasRest=Math.max(0,Math.ceil((FIN-HOY)/(1000*60*60*24)));
+  const labRest=contarLaboralesFuturos();
+  const visitas=Object.values(calEstado).filter(v=>v>0).length;
+  document.getElementById('pills-row').innerHTML=`
+    <div class="pill"><div class="pnum" style="color:var(--blue)">${diasRest}</div><div class="plbl">días al cierre</div></div>
+    <div class="pill"><div class="pnum" style="color:var(--teal)">${labRest}</div><div class="plbl">días laborales</div></div>
+    <div class="pill"><div class="pnum" style="color:var(--teal-mid)">${visitas}</div><div class="plbl">visitas</div></div>
+    <div class="pill"><div class="pnum" style="color:var(--amber)">${clientes}</div><div class="plbl">clientes</div></div>`;
+}
+
+function buildCalendario(){
+  const container=document.getElementById('cal-inner');
+  container.innerHTML='';
+  const meses=[{anio:2026,mes:4,nombre:'Mayo 2026'},{anio:2026,mes:5,nombre:'Junio 2026'}];
+  meses.forEach((m,idx)=>{
+    const tit=document.createElement('div'); tit.className='cal-mes-titulo'; tit.textContent=m.nombre; container.appendChild(tit);
+    const lblRow=document.createElement('div'); lblRow.className='cal-lbl-row';
+    ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].forEach((d,i)=>{ const l=document.createElement('div'); l.className='cal-lbl'+(i===0?' dom':''); l.textContent=d; lblRow.appendChild(l); });
+    container.appendChild(lblRow);
+    const grid=document.createElement('div'); grid.className='cal-grid';
+    const primerDia=new Date(m.anio,m.mes,1);
+    const ultimoDia=new Date(m.anio,m.mes+1,0);
+    const offset=primerDia.getDay();
+    for(let i=0;i<offset;i++){ const c=document.createElement('div'); c.className='cdia'; grid.appendChild(c); }
+    for(let dia=1;dia<=ultimoDia.getDate();dia++){
+      const fecha=new Date(m.anio,m.mes,dia);
+      const cel=document.createElement('div');
+      cel.textContent=dia;
+      const esDom=fecha.getDay()===0;
+      const dentroDelPeriodo=fecha>=INICIO&&fecha<=FIN;
+      const esHoy=mismaFecha(fecha,HOY);
+      const pasado=esPasado(fecha);
+      const key=fkey(fecha);
+      const estado=calEstado[key]||0;
+      if(!dentroDelPeriodo){ cel.className='cdia fuera-periodo'; }
+      else if(esDom){ cel.className='cdia dom'; }
+      else if(pasado){
+        if(estado===1) cel.className='cdia visitado';
+        else if(estado===2) cel.className='cdia cliente';
+        else cel.className='cdia pasado';
+      } else {
+        let cls='cdia laboral';
+        if(esHoy) cls+=' hoy';
+        if(estado===1) cls+=' visitado';
+        else if(estado===2) cls+=' cliente';
+        cel.className=cls;
+        const capturedKey=key;
+        cel.onclick=()=>{ calEstado[capturedKey]=((calEstado[capturedKey]||0)+1)%3; buildCalendario(); actualizarPills(); if(calEstado[capturedKey]===2) mostrarNotif('🏆 ¡Cliente cerrado!'); else if(calEstado[capturedKey]===1) mostrarNotif('✓ Visita marcada.'); };
+      }
+      grid.appendChild(cel);
+    }
+    container.appendChild(grid);
+    if(idx<meses.length-1){ const sep=document.createElement('hr'); sep.className='cal-sep'; container.appendChild(sep); }
+  });
+}
+
+// ── NOTIF ──
+let nTO;
+function mostrarNotif(msg){ const n=document.getElementById('notif'); n.textContent=msg; n.classList.add('show'); clearTimeout(nTO); nTO=setTimeout(()=>n.classList.remove('show'),3000); }
+
+// ── INIT ──
+buildCalendario();
+actualizarPills();
+</script>
+</body>
+</html>
