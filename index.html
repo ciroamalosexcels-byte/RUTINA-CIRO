@@ -144,6 +144,26 @@
 
   .notif { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--cream); padding: 12px 24px; border-radius: 99px; font-size: 14px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
   .notif.show { transform: translateX(-50%) translateY(0); }
+
+
+  /* CUMPLIMIENTO */
+  .cum-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+  .cum-stat { background: var(--cream); border: 1px solid var(--border); border-radius: 12px; padding: 12px 10px; text-align: center; }
+  .cum-stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; color: var(--ink); }
+  .cum-stat-lbl { font-size: 11px; color: var(--ink-faint); margin-top: 4px; }
+  .cum-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .mini-btn { background: var(--cream); border: 1px solid var(--border-strong); border-radius: 99px; padding: 7px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--ink); cursor: pointer; transition: all 0.2s; }
+  .mini-btn:hover { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal); }
+  .cum-cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .cum-cal-title { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--ink); }
+  .cum-nav { display: flex; gap: 6px; align-items: center; }
+  .cdia.perfecto { background: var(--teal-mid) !important; color: white !important; border-color: var(--teal) !important; }
+  .cdia.parcial { background: var(--amber-light) !important; color: var(--amber) !important; border-color: var(--amber-mid) !important; }
+  .cdia.sin-registro { background: #f5f4f1; color: #c5c2bc; border: 1px solid transparent; }
+  .cdia.futuro { background: white; color: #d8d5cf; border: 1px dashed var(--border); }
+  .cum-note { font-size: 12px; color: var(--ink-soft); line-height: 1.55; margin-top: 10px; }
+  @media (max-width: 520px) { .cum-top { grid-template-columns: 1fr; } }
+
   .footer-space { height: 2rem; }
 </style>
 </head>
@@ -162,6 +182,7 @@
   <div class="tabs">
     <button class="tab active" onclick="cambiarTab('rutina',this)">Rutina</button>
     <button class="tab" onclick="cambiarTab('pomodoro',this)">Pomodoro</button>
+    <button class="tab" onclick="cambiarTab('cumplimiento',this)">Cumplimiento</button>
     <button class="tab" onclick="cambiarTab('clientes',this)">Clientes</button>
   </div>
 </header>
@@ -238,6 +259,52 @@
   <div class="footer-space"></div>
 </div>
 
+
+<!-- CUMPLIMIENTO -->
+<div id="tab-cumplimiento" class="view">
+  <div style="height:1rem"></div>
+  <div class="card">
+    <div class="card-titulo">Cumplimiento de rutina</div>
+    <div class="card-sub">Los checks quedan guardados por día en este navegador.</div>
+    <div class="cum-top" style="margin-top:14px">
+      <div class="cum-stat"><div class="cum-stat-num" id="cum-hoy">0/0</div><div class="cum-stat-lbl">checks de hoy</div></div>
+      <div class="cum-stat"><div class="cum-stat-num" id="cum-pct">0%</div><div class="cum-stat-lbl">cumplimiento</div></div>
+      <div class="cum-stat"><div class="cum-stat-num" id="cum-racha">0</div><div class="cum-stat-lbl">racha completa</div></div>
+    </div>
+    <div class="barra-wrap"><div class="barra-fill" id="barra-cum" style="width:0%;background:var(--teal-mid)"></div></div>
+    <div class="cum-note" id="cum-texto">Marcá tareas en la pestaña Rutina para construir tu historial.</div>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="reiniciarChecksHoy()">Limpiar checks de hoy</button>
+      <button class="mini-btn" onclick="exportarMemoriaRutina()">Exportar memoria</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cum-cal-head">
+      <div>
+        <div class="card-titulo">Calendario de cumplimientos</div>
+        <div class="card-sub">Verde = día completo · naranja = parcial</div>
+      </div>
+      <div class="cum-nav">
+        <button class="mini-btn" onclick="cambiarMesCumplimiento(-1)">‹</button>
+        <button class="mini-btn" onclick="irAHoyCumplimiento()">Hoy</button>
+        <button class="mini-btn" onclick="cambiarMesCumplimiento(1)">›</button>
+      </div>
+    </div>
+    <div class="cum-cal-title" id="cum-cal-title"></div>
+    <div class="cal-lbl-row">
+      <div class="cal-lbl dom">Dom</div><div class="cal-lbl">Lun</div><div class="cal-lbl">Mar</div><div class="cal-lbl">Mié</div><div class="cal-lbl">Jue</div><div class="cal-lbl">Vie</div><div class="cal-lbl">Sáb</div>
+    </div>
+    <div class="cal-grid" id="cum-cal-grid"></div>
+    <div class="leyenda">
+      <div class="ley-item"><div class="ley-dot" style="background:var(--teal-mid)"></div>Completo</div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--amber-light);border:1px solid var(--amber-mid)"></div>Parcial</div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--teal-light);border:1.5px solid var(--teal-mid)"></div>Hoy</div>
+      <div class="ley-item"><div class="ley-dot" style="background:#f5f4f1;border:1px solid #ddd"></div>Sin registro</div>
+    </div>
+  </div>
+  <div class="footer-space"></div>
+</div>
+
 <!-- POMODORO -->
 <div id="tab-pomodoro" class="view">
   <div style="height:1rem"></div>
@@ -302,8 +369,247 @@
 <div class="notif" id="notif"></div>
 
 <script>
-// ── FECHAS FIJAS ──
-const HOY   = new Date(2026, 5, 1);  // 1 jun 2026 — lunes (getDay()===1 ✓)
+
+// ── MEMORIA LOCAL ──
+const STORAGE_NS = 'rutinaDiariaConMemoriaV1';
+
+function storageKey(nombre) {
+  return STORAGE_NS + ':' + nombre;
+}
+
+function leerJSON(clave, fallback) {
+  try {
+    const raw = localStorage.getItem(clave);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch(e) {
+    return fallback;
+  }
+}
+
+function guardarJSON(clave, valor) {
+  try {
+    localStorage.setItem(clave, JSON.stringify(valor));
+  } catch(e) {}
+}
+
+function fechaISO(d = new Date()) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function normalizarId(txt) {
+  return String(txt || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+const FECHA_RUTINA = fechaISO(new Date());
+let mesCumplimiento = new Date();
+mesCumplimiento.setDate(1);
+mesCumplimiento.setHours(0,0,0,0);
+
+function getBloquesRutina() {
+  return Array.from(document.querySelectorAll('#tab-rutina .bloque'));
+}
+
+function getBloqueId(bloque, index) {
+  if (!bloque.dataset.rid) {
+    const titulo = bloque.querySelector('.titulo')?.textContent || 'tarea';
+    const hora = bloque.dataset.desde || index;
+    bloque.dataset.rid = normalizarId(hora + '-' + titulo);
+  }
+  return bloque.dataset.rid;
+}
+
+function aplicarEstadoCheck(btn, hecho) {
+  const bloque = btn.closest('.bloque');
+  btn.classList.toggle('done', hecho);
+  bloque.classList.toggle('completado', hecho);
+}
+
+function leerChecksDeHoy() {
+  return leerJSON(storageKey('checks:' + FECHA_RUTINA), {});
+}
+
+function guardarChecksDeHoy() {
+  const checks = {};
+  getBloquesRutina().forEach((bloque, i) => {
+    const btn = bloque.querySelector('.check-btn');
+    checks[getBloqueId(bloque, i)] = !!btn?.classList.contains('done');
+  });
+  guardarJSON(storageKey('checks:' + FECHA_RUTINA), checks);
+  actualizarCumplimientoDia();
+}
+
+function cargarChecksRutina() {
+  const checks = leerChecksDeHoy();
+  getBloquesRutina().forEach((bloque, i) => {
+    const btn = bloque.querySelector('.check-btn');
+    if (!btn) return;
+    const hecho = !!checks[getBloqueId(bloque, i)];
+    aplicarEstadoCheck(btn, hecho);
+  });
+}
+
+function leerProgresoRutina() {
+  return leerJSON(storageKey('progresoRutina'), {});
+}
+
+function guardarProgresoRutina(data) {
+  guardarJSON(storageKey('progresoRutina'), data);
+}
+
+function actualizarCumplimientoDia() {
+  const bloques = getBloquesRutina();
+  if (!bloques.length) return;
+  const total = bloques.length;
+  const done = bloques.filter(b => b.querySelector('.check-btn')?.classList.contains('done')).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const progreso = leerProgresoRutina();
+  progreso[FECHA_RUTINA] = {
+    done,
+    total,
+    pct,
+    completo: total > 0 && done === total,
+    updatedAt: new Date().toISOString()
+  };
+  guardarProgresoRutina(progreso);
+  actualizarResumenCumplimiento();
+  buildCalendarioCumplimiento();
+}
+
+function calcularRachaCompleta() {
+  const progreso = leerProgresoRutina();
+  let cursor = new Date();
+  cursor.setHours(0,0,0,0);
+
+  // Si hoy todavía no está completo, cuenta la racha cerrada hasta ayer.
+  const hoyKey = fechaISO(cursor);
+  if (!progreso[hoyKey]?.completo) cursor.setDate(cursor.getDate() - 1);
+
+  let racha = 0;
+  for (let i = 0; i < 366; i++) {
+    const key = fechaISO(cursor);
+    if (progreso[key]?.completo) {
+      racha++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return racha;
+}
+
+function actualizarResumenCumplimiento() {
+  const bloques = getBloquesRutina();
+  const total = bloques.length;
+  const done = bloques.filter(b => b.querySelector('.check-btn')?.classList.contains('done')).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const racha = calcularRachaCompleta();
+
+  const hoyEl = document.getElementById('cum-hoy');
+  if (!hoyEl) return;
+  document.getElementById('cum-hoy').textContent = done + '/' + total;
+  document.getElementById('cum-pct').textContent = pct + '%';
+  document.getElementById('cum-racha').textContent = racha;
+  document.getElementById('barra-cum').style.width = pct + '%';
+  document.getElementById('cum-texto').textContent = pct === 100
+    ? 'Día completo. Este cumplimiento ya quedó guardado en el calendario.'
+    : 'Te faltan ' + Math.max(0, total - done) + ' tareas para completar la rutina de hoy.';
+}
+
+function buildCalendarioCumplimiento() {
+  const grid = document.getElementById('cum-cal-grid');
+  const title = document.getElementById('cum-cal-title');
+  if (!grid || !title) return;
+
+  const progreso = leerProgresoRutina();
+  const anio = mesCumplimiento.getFullYear();
+  const mes = mesCumplimiento.getMonth();
+  title.textContent = MESES_NOM[mes][0].toUpperCase() + MESES_NOM[mes].slice(1) + ' ' + anio;
+  grid.innerHTML = '';
+
+  const primerDia = new Date(anio, mes, 1);
+  const ultimoDia = new Date(anio, mes + 1, 0);
+  const offset = primerDia.getDay();
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+
+  for (let i = 0; i < offset; i++) {
+    const vacio = document.createElement('div');
+    vacio.className = 'cdia';
+    grid.appendChild(vacio);
+  }
+
+  for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+    const fecha = new Date(anio, mes, dia);
+    fecha.setHours(0,0,0,0);
+    const key = fechaISO(fecha);
+    const estado = progreso[key];
+    const cel = document.createElement('div');
+    cel.textContent = dia;
+    let cls = 'cdia laboral';
+
+    if (fecha > hoy) cls += ' futuro';
+    else if (estado?.completo) cls += ' perfecto';
+    else if (estado && estado.done > 0) cls += ' parcial';
+    else cls += ' sin-registro';
+
+    if (mismaFecha(fecha, hoy)) cls += ' hoy';
+    cel.className = cls;
+    cel.onclick = () => {
+      const e = leerProgresoRutina()[key];
+      if (e) mostrarNotif('📌 ' + dia + '/' + (mes+1) + ': ' + e.done + '/' + e.total + ' tareas · ' + e.pct + '%');
+      else mostrarNotif('Sin registro para este día.');
+    };
+    grid.appendChild(cel);
+  }
+}
+
+function cambiarMesCumplimiento(delta) {
+  mesCumplimiento.setMonth(mesCumplimiento.getMonth() + delta);
+  buildCalendarioCumplimiento();
+}
+
+function irAHoyCumplimiento() {
+  mesCumplimiento = new Date();
+  mesCumplimiento.setDate(1);
+  mesCumplimiento.setHours(0,0,0,0);
+  buildCalendarioCumplimiento();
+}
+
+function reiniciarChecksHoy() {
+  getBloquesRutina().forEach(b => {
+    const btn = b.querySelector('.check-btn');
+    if (btn) aplicarEstadoCheck(btn, false);
+  });
+  guardarChecksDeHoy();
+  mostrarNotif('Checks de hoy reiniciados.');
+}
+
+function exportarMemoriaRutina() {
+  const memoria = {
+    checksHoy: leerChecksDeHoy(),
+    progresoRutina: leerProgresoRutina(),
+    clientes: leerJSON(storageKey('clientes'), 0),
+    calendarioVentas: leerJSON(storageKey('calEstadoVentas'), {})
+  };
+  const blob = new Blob([JSON.stringify(memoria, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'memoria-rutina-' + FECHA_RUTINA + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  mostrarNotif('Memoria exportada.');
+}
+
+// ── FECHAS ──
+const HOY = new Date();
+HOY.setHours(0,0,0,0);
 const INICIO = new Date(2026, 4, 28); // 28 may 2026
 const FIN    = new Date(2026, 5, 28); // 28 jun 2026
 const DIAS_NOM  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -417,34 +723,41 @@ function cambiarTab(id, btn) {
 
 // ── CHECK ──
 function toggleCheck(btn) {
-  btn.classList.toggle('done');
-  btn.closest('.bloque').classList.toggle('completado');
+  const hecho = !btn.classList.contains('done');
+  aplicarEstadoCheck(btn, hecho);
+  guardarChecksDeHoy();
+  mostrarNotif(hecho ? '✓ Tarea guardada.' : 'Tarea desmarcada.');
 }
 
 // ── POMODORO ──
-let pomTotal=25*60, pomRest=25*60, pomInt=null, pomOn=false, pomDone=0, pomLabel='Trabajo profundo';
+let pomTotal=25*60, pomRest=25*60, pomInt=null, pomOn=false, pomDone=leerJSON(storageKey('pomDone:' + FECHA_RUTINA),0), pomLabel='Trabajo profundo';
 function fmtT(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 function updPom(){ document.getElementById('pom-display').textContent=fmtT(pomRest); document.getElementById('pom-barra').style.width=((pomTotal-pomRest)/pomTotal*100)+'%'; }
 function setModo(min,lbl,btn){ document.querySelectorAll('.pom-modo').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); pomTotal=min*60; pomRest=pomTotal; pomLabel=lbl; pomOn=false; clearInterval(pomInt); document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=lbl+' — listos para arrancar'; updPom(); }
-function togglePom(){ if(pomOn){ clearInterval(pomInt); pomOn=false; document.getElementById('pom-toggle').textContent='▶ Continuar'; document.getElementById('pom-estado').textContent=pomLabel+' — pausado'; } else { pomOn=true; document.getElementById('pom-toggle').textContent='⏸ Pausar'; document.getElementById('pom-estado').textContent=pomLabel+' — en curso'; pomInt=setInterval(()=>{ pomRest--; updPom(); if(pomRest<=0){ clearInterval(pomInt); pomOn=false; pomDone++; document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent='¡Completado! Descansá.'; document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; mostrarNotif('🎉 ¡Pomodoro listo! Tomá un descanso.'); } },1000); document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; } }
+function togglePom(){ if(pomOn){ clearInterval(pomInt); pomOn=false; document.getElementById('pom-toggle').textContent='▶ Continuar'; document.getElementById('pom-estado').textContent=pomLabel+' — pausado'; } else { pomOn=true; document.getElementById('pom-toggle').textContent='⏸ Pausar'; document.getElementById('pom-estado').textContent=pomLabel+' — en curso'; pomInt=setInterval(()=>{ pomRest--; updPom(); if(pomRest<=0){ clearInterval(pomInt); pomOn=false; pomDone++; guardarJSON(storageKey('pomDone:' + FECHA_RUTINA), pomDone); document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent='¡Completado! Descansá.'; document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; mostrarNotif('🎉 ¡Pomodoro listo! Tomá un descanso.'); } },1000); document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; } }
 function resetPom(){ clearInterval(pomInt); pomOn=false; pomRest=pomTotal; document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=pomLabel+' — listos para arrancar'; updPom(); }
 updPom();
 
 // ── CLIENTES ──
-let clientes = 0;
-let calEstado = {};
+let clientes = leerJSON(storageKey('clientes'), 0);
+let calEstado = leerJSON(storageKey('calEstadoVentas'), {});
 function fkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function mismaFecha(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 function esPasado(d){ return d<HOY&&!mismaFecha(d,HOY); }
 
-function cambiarClientes(delta){
-  clientes=Math.max(0,Math.min(20,clientes+delta));
+function actualizarClientesUI(){
   document.getElementById('num-clientes').textContent=clientes;
   const pct=Math.min(100,Math.round(clientes/6*100));
   document.getElementById('barra-cl').style.width=pct+'%';
   document.getElementById('pct-cl').textContent=pct+'% del objetivo';
   actualizarPills();
-  if(clientes>=6) mostrarNotif('🎯 ¡Meta de 6 clientes alcanzada!');
+}
+
+function cambiarClientes(delta){
+  clientes=Math.max(0,Math.min(20,clientes+delta));
+  guardarJSON(storageKey('clientes'), clientes);
+  actualizarClientesUI();
+  if(delta>0 && clientes>=6) mostrarNotif('🎯 ¡Meta de 6 clientes alcanzada!');
 }
 
 function contarLaboralesFuturos(){
@@ -501,7 +814,7 @@ function buildCalendario(){
         else if(estado===2) cls+=' cliente';
         cel.className=cls;
         const capturedKey=key;
-        cel.onclick=()=>{ calEstado[capturedKey]=((calEstado[capturedKey]||0)+1)%3; buildCalendario(); actualizarPills(); if(calEstado[capturedKey]===2) mostrarNotif('🏆 ¡Cliente cerrado!'); else if(calEstado[capturedKey]===1) mostrarNotif('✓ Visita marcada.'); };
+        cel.onclick=()=>{ calEstado[capturedKey]=((calEstado[capturedKey]||0)+1)%3; guardarJSON(storageKey('calEstadoVentas'), calEstado); buildCalendario(); actualizarPills(); if(calEstado[capturedKey]===2) mostrarNotif('🏆 ¡Cliente cerrado!'); else if(calEstado[capturedKey]===1) mostrarNotif('✓ Visita marcada.'); };
       }
       grid.appendChild(cel);
     }
@@ -515,8 +828,12 @@ let nTO;
 function mostrarNotif(msg){ const n=document.getElementById('notif'); n.textContent=msg; n.classList.add('show'); clearTimeout(nTO); nTO=setTimeout(()=>n.classList.remove('show'),3000); }
 
 // ── INIT ──
+cargarChecksRutina();
+actualizarCumplimientoDia();
 buildCalendario();
+actualizarClientesUI();
 actualizarPills();
+document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`;
 </script>
 </body>
 </html>
