@@ -172,6 +172,112 @@
   .cum-note { font-size: 12px; color: var(--ink-soft); line-height: 1.55; margin-top: 10px; }
   @media (max-width: 520px) { .cum-top { grid-template-columns: 1fr; } }
 
+
+  /* TIEMPO */
+  .tiempo-hero { background: var(--ink); color: var(--cream); border-radius: var(--radius); padding: 1.4rem; margin: 1rem 0 1rem; animation: fadeUp 0.4s ease both; }
+  .tiempo-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .tiempo-kicker { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(245,242,236,0.42); }
+  .tiempo-big { font-family: 'DM Serif Display', serif; font-size: 2.7rem; letter-spacing: -0.04em; line-height: 1; }
+  .tiempo-small { font-size: 12px; color: rgba(245,242,236,0.52); margin-top: 4px; line-height: 1.5; }
+  .tiempo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 0; }
+  .tiempo-stat { background: rgba(245,242,236,0.08); border: 1px solid rgba(245,242,236,0.12); border-radius: 12px; padding: 10px 8px; text-align: center; }
+  .tiempo-stat-num { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1; }
+  .tiempo-stat-lbl { font-size: 10px; color: rgba(245,242,236,0.42); margin-top: 4px; }
+  .tiempo-active { background: var(--teal-light); color: var(--teal); border-radius: 12px; padding: 10px 12px; font-size: 12px; font-weight: 600; display: none; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .tiempo-active.show { display: flex; }
+  .tiempo-active strong { color: var(--ink); }
+  .area-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 10px; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  .area-card.active { border-color: var(--teal-mid); box-shadow: 0 0 0 3px rgba(29,158,117,0.12), var(--shadow); }
+  .area-head { display: flex; align-items: flex-start; gap: 10px; justify-content: space-between; }
+  .area-title-wrap { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+  .area-num { width: 30px; height: 30px; min-width: 30px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--ink-soft); }
+  .area-title { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .area-detail { font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-top: 3px; }
+  .area-time { text-align: right; white-space: nowrap; }
+  .area-time .hecho { font-family: 'DM Serif Display', serif; font-size: 1.8rem; line-height: 1; }
+  .area-time .obj { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+  .area-actions { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+  .area-actions .mini-btn.active { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+  .area-extra { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .mini-counter { background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; min-width: 88px; }
+  .mini-counter strong { font-family: 'DM Serif Display', serif; font-size: 1.4rem; line-height: 1; }
+  .mini-counter span { font-size: 10px; color: var(--ink-faint); display: block; margin-top: 2px; }
+  .check-mini { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 99px; padding: 7px 10px; background: var(--cream); font-size: 12px; cursor: pointer; }
+  .check-mini.done { background: var(--teal-light); color: var(--teal); border-color: var(--teal-mid); font-weight: 700; }
+  .session-list { display: grid; gap: 8px; margin-top: 10px; }
+  .session-item { background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--ink-soft); }
+  .session-item strong { color: var(--ink); }
+  .pom-area-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 7px; margin-bottom: 1.2rem; }
+  .pom-area-btn { background: rgba(245,242,236,0.08); border: 1px solid rgba(245,242,236,0.15); color: rgba(245,242,236,0.62); padding: 8px 9px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 11px; cursor: pointer; text-align: left; line-height: 1.25; }
+  .pom-area-btn.active { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+  @media (max-width: 560px) {
+    .tiempo-grid { grid-template-columns: 1fr; }
+    .area-head { flex-direction: column; }
+    .area-time { text-align: left; }
+    .pom-area-list { grid-template-columns: 1fr; }
+  }
+
+
+
+  /* SECCIONES RETRAÍBLES DE RUTINA */
+  .rutina-section { margin-bottom: 8px; }
+  .rutina-section .seccion { margin: 1.5rem 0 10px; }
+  .rutina-section-btn {
+    width: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+  }
+  .rutina-section-btn .seccion { margin-bottom: 10px; }
+  .rutina-section-title { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .rutina-section-chevron {
+    width: 20px; height: 20px; min-width: 20px;
+    border-radius: 50%;
+    background: rgba(26,24,20,0.06);
+    color: var(--ink-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .rutina-section.collapsed .rutina-section-chevron { transform: rotate(-90deg); }
+  .rutina-section.collapsed .rutina-section-content { display: none; }
+  .rutina-section-btn:hover .rutina-section-chevron { background: var(--teal-light); color: var(--teal); }
+  .rutina-section-count { font-size: 10px; color: var(--ink-faint); font-weight: 600; text-transform: none; letter-spacing: 0; margin-left: 2px; }
+
+  /* CONFIGURACIÓN DE RUTINA */
+  .rutina-config-card { margin-top: 1.2rem; }
+  .rutina-config-panel { display:none; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px; }
+  .rutina-config-panel.show { display:block; }
+  .rutina-config-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 12px; flex-wrap:wrap; }
+  .rutina-editor-list { display:grid; gap:10px; }
+  .rutina-edit-row { background: var(--cream); border:1px solid var(--border); border-radius:12px; padding:12px; }
+  .rutina-edit-row.section { background:#faf8f3; }
+  .rutina-edit-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .rutina-edit-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; color:var(--ink-faint); }
+  .rutina-edit-actions { display:flex; gap:6px; flex-wrap:wrap; }
+  .rutina-icon-btn { background:white; border:1px solid var(--border-strong); border-radius:8px; width:32px; height:32px; cursor:pointer; font-size:14px; color:var(--ink); }
+  .rutina-icon-btn:hover { background:var(--teal-light); border-color:var(--teal-mid); color:var(--teal); }
+  .rutina-icon-btn.danger:hover { background:#fff1f1; border-color:#d66; color:#b22; }
+  .rutina-fields { display:grid; grid-template-columns: 86px 86px 62px 1fr; gap:8px; }
+  .rutina-fields.full { grid-template-columns: 1fr; }
+  .rutina-field-wide { grid-column: 1 / -1; }
+  .rutina-field { display:flex; flex-direction:column; gap:4px; }
+  .rutina-field label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); }
+  .rutina-field input, .rutina-field textarea, .rutina-field select {
+    width:100%; border:1px solid var(--border-strong); background:white; border-radius:10px; padding:9px 10px;
+    font-family:'DM Sans', sans-serif; font-size:13px; color:var(--ink); outline:none;
+  }
+  .rutina-field textarea { min-height:66px; resize:vertical; line-height:1.4; }
+  .rutina-field input:focus, .rutina-field textarea:focus, .rutina-field select:focus { border-color:var(--teal-mid); box-shadow:0 0 0 3px rgba(29,158,117,0.1); }
+  .rutina-config-note { font-size:12px; color:var(--ink-soft); line-height:1.55; margin:8px 0 12px; }
+  @media (max-width: 560px) {
+    .rutina-fields { grid-template-columns: 1fr 1fr; }
+    .rutina-fields .rutina-field:nth-child(4) { grid-column:1 / -1; }
+  }
+
   .footer-space { height: 2rem; }
 </style>
 </head>
@@ -189,6 +295,7 @@
   </div>
   <div class="tabs">
     <button class="tab active" onclick="cambiarTab('rutina',this)">Rutina</button>
+    <button class="tab" onclick="cambiarTab('tiempo',this)">Tiempo</button>
     <button class="tab" onclick="cambiarTab('pomodoro',this)">Pomodoro</button>
     <button class="tab" onclick="cambiarTab('cumplimiento',this)">Cumplimiento</button>
     <button class="tab" onclick="cambiarTab('clientes',this)">Clientes</button>
@@ -198,72 +305,53 @@
 <main>
 <!-- RUTINA -->
 <div id="tab-rutina" class="view active">
-  <div class="seccion">Rutina matutina</div>
+  <div id="rutina-list"></div>
 
-  <div class="bloque" data-desde="7:30" data-hasta="7:35" style="animation-delay:.05s">
-    <span class="hora">7:30</span><span class="icono">⏰</span>
-    <div class="contenido"><p class="titulo">Despertar</p><p class="detalle">Levantarse puntual. Sin snooze.</p><span class="tag tag-verde">Inicio del día</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  <div class="card rutina-config-card">
+    <div class="card-titulo">Configuración de rutina</div>
+    <div class="card-sub">Modificá horarios, orden, textos y tareas. Los cambios quedan guardados en este navegador.</div>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="toggleConfigRutina()">⚙️ Configurar rutina</button>
+    </div>
+    <div id="rutina-config-panel" class="rutina-config-panel"></div>
+  </div>
+  <div class="footer-space"></div>
+</div>
+
+<!-- TIEMPO -->
+<div id="tab-tiempo" class="view">
+  <div class="tiempo-hero">
+    <div class="tiempo-hero-top">
+      <div>
+        <div class="tiempo-kicker">Control real de tiempo</div>
+        <div class="tiempo-big" id="tiempo-total-hoy">0h</div>
+        <div class="tiempo-small" id="tiempo-resumen">Objetivo diario: 10h · faltan 10h</div>
+      </div>
+      <button class="mini-btn" onclick="reiniciarTiempoHoy()">Reiniciar hoy</button>
+    </div>
+    <div class="barra-wrap" style="background:rgba(245,242,236,0.12);margin:0"><div class="barra-fill" id="tiempo-barra-total" style="width:0%;background:var(--teal-mid)"></div></div>
+    <div class="tiempo-grid">
+      <div class="tiempo-stat"><div class="tiempo-stat-num" id="tiempo-pct">0%</div><div class="tiempo-stat-lbl">cumplimiento</div></div>
+      <div class="tiempo-stat"><div class="tiempo-stat-num" id="tiempo-faltan">10h</div><div class="tiempo-stat-lbl">faltan</div></div>
+      <div class="tiempo-stat"><div class="tiempo-stat-num" id="tiempo-sesiones">0</div><div class="tiempo-stat-lbl">sesiones</div></div>
+    </div>
+    <div class="tiempo-active" id="tiempo-active-box">
+      <div id="tiempo-active-text">Área activa</div>
+      <button class="mini-btn" onclick="pausarTiempo()">Pausar / finalizar</button>
+    </div>
   </div>
 
-  <div class="bloque" data-desde="7:35" data-hasta="7:45" style="animation-delay:.1s">
-    <span class="hora">7:35</span><span class="icono">🏃</span>
-    <div class="contenido"><p class="titulo">Ejercicio físico (~10 min)</p><p class="detalle">10 abdominales · 10 sentadillas · 10 laterales izq · 10 laterales der · 10 elevaciones de brazos</p><span class="tag tag-verde">Movimiento</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+  <div class="seccion">Tus 6 puntos de control</div>
+  <div id="areas-tiempo"></div>
+
+  <div class="card">
+    <div class="card-titulo">Últimas sesiones de hoy</div>
+    <div class="card-sub">Cada vez que pausás o sumás manualmente queda registrado acá.</div>
+    <div class="session-list" id="session-list"></div>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="exportarTiempo()">Exportar tiempos</button>
+    </div>
   </div>
-
-  <div class="bloque" data-desde="7:45" data-hasta="7:48" style="animation-delay:.15s">
-    <span class="hora">7:45</span><span class="icono">💧</span>
-    <div class="contenido"><p class="titulo">Hidratación</p><p class="detalle">2 vasos de agua</p></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="bloque" data-desde="7:48" data-hasta="8:10" style="animation-delay:.2s">
-    <span class="hora">7:48</span><span class="icono">🚿</span>
-    <div class="contenido"><p class="titulo">Baño + Skincare</p><p class="detalle">Necesidades · Ducha · Rutina de skincare</p></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="bloque" data-desde="8:10" data-hasta="8:20" style="animation-delay:.25s">
-    <span class="hora">8:10</span><span class="icono">👔</span>
-    <div class="contenido"><p class="titulo">Vestirse como líder</p><p class="detalle">Camisa · Corbata o trombón · Pantalón de traje · Zapatos formales</p><span class="tag tag-verde">Presencia profesional</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="bloque" data-desde="8:20" data-hasta="8:40" style="animation-delay:.3s">
-    <span class="hora">8:20</span><span class="icono">☕</span>
-    <div class="contenido"><p class="titulo">Desayuno</p><p class="detalle">Hot cake · Té o malta con maca peruana</p></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="seccion">Bloque de trabajo — sistemas</div>
-
-  <div class="bloque" data-desde="8:40" data-hasta="9:10" style="animation-delay:.35s">
-    <span class="hora">8:40</span><span class="icono">👥</span>
-    <div class="contenido"><p class="titulo">Reunión de equipo</p><p class="detalle">Biomarketing & Bioestrategia — 20 a 30 minutos</p><span class="tag tag-azul">Reunión</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="bloque" data-desde="9:10" data-hasta="12:30" style="animation-delay:.4s">
-    <span class="hora">9:10</span><span class="icono">⚙️</span>
-    <div class="contenido"><p class="titulo">Mejora de sistemas con Claude</p><p class="detalle">Biomarketing & Bioestrategia · 2 a 3 horas de trabajo profundo</p><span class="tag tag-azul">Trabajo profundo</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="seccion">Bloque de ventas</div>
-
-  <div class="bloque" data-desde="12:30" data-hasta="13:30" style="animation-delay:.45s">
-    <span class="hora">12:30</span><span class="icono">🍽️</span>
-    <div class="contenido"><p class="titulo">Almuerzo + pausa</p><p class="detalle">Descanso para recargar antes del bloque comercial</p></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
-  <div class="bloque" data-desde="13:30" data-hasta="23:59" style="animation-delay:.5s">
-    <span class="hora">13:30</span><span class="icono">📞</span>
-    <div class="contenido"><p class="titulo">Visitas y contactos estratégicos</p><p class="detalle">Meta: 30 contactos → 6 clientes mínimos · Biomarketing o Bioestrategia</p><span class="tag tag-naranja">Cierre de clientes</span></div>
-    <button class="check-btn" onclick="toggleCheck(this)">✓</button>
-  </div>
-
   <div class="footer-space"></div>
 </div>
 
@@ -318,6 +406,8 @@
   <div style="height:1rem"></div>
   <div class="pom-card">
     <div class="pom-label">Técnica Pomodoro</div>
+    <div class="pom-label" style="margin-bottom:.75rem;color:rgba(245,242,236,0.45)">¿A qué área se suma este pomodoro?</div>
+    <div class="pom-area-list" id="pom-area-list"></div>
     <div class="pom-modos">
       <button class="pom-modo active" onclick="setModo(25,'Trabajo profundo',this)">25 min — trabajo</button>
       <button class="pom-modo" onclick="setModo(5,'Descanso corto',this)">5 min — pausa</button>
@@ -601,7 +691,10 @@ function exportarMemoriaRutina() {
     checksHoy: leerChecksDeHoy(),
     progresoRutina: leerProgresoRutina(),
     clientes: leerJSON(storageKey('clientes'), 0),
-    calendarioVentas: leerJSON(storageKey('calEstadoVentas'), {})
+    calendarioVentas: leerJSON(storageKey('calEstadoVentas'), {}),
+    tiempoHoy: leerJSON(storageKey('tiempo:' + FECHA_RUTINA), {}),
+    tiempoActivo: leerJSON(storageKey('tiempoActivo'), null),
+    rutinaConfig: leerJSON(storageKey('rutinaConfigV2'), [])
   };
   const blob = new Blob([JSON.stringify(memoria, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
@@ -628,7 +721,9 @@ document.getElementById('fecha-hoy').textContent = DIAS_NOM[HOY.getDay()] + ', '
 function minutosDesdeMedianoche(h, m) { return h * 60 + m; }
 
 function parsearHora(str) {
-  const [h, m] = str.split(':').map(Number);
+  if (!str || !String(str).includes(':')) return null;
+  const [h, m] = String(str).split(':').map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
   return minutosDesdeMedianoche(h, m);
 }
 
@@ -653,6 +748,7 @@ function actualizarReloj() {
     b.classList.remove('activo', 'proximo');
     const desde = parsearHora(b.dataset.desde);
     const hasta  = parsearHora(b.dataset.hasta);
+    if (desde === null || hasta === null) return;
     if (minActual >= desde && minActual < hasta) {
       activoIdx = i;
     }
@@ -666,7 +762,7 @@ function actualizarReloj() {
     // Buscar el primero que todavía no empezó
     for (let i = 0; i < bloques.length; i++) {
       const desde = parsearHora(bloques[i].dataset.desde);
-      if (minActual < desde) { proximoIdx = i; break; }
+      if (desde !== null && minActual < desde) { proximoIdx = i; break; }
     }
   }
 
@@ -737,12 +833,589 @@ function toggleCheck(btn) {
   mostrarNotif(hecho ? '✓ Tarea guardada.' : 'Tarea desmarcada.');
 }
 
+
+// ── CONFIGURACIÓN EDITABLE DE RUTINA ──
+const RUTINA_DEFAULT = [
+  {type:'section', uid:'sec-arranque', titulo:'Arranque del día'},
+  {type:'task', uid:'t-despertar', desde:'7:30', hasta:'7:35', icon:'⏰', titulo:'Despertar', detalle:'Levantarse puntual y cortar el sueño rápido.', tag:'Inicio del día', tagClass:'tag-verde'},
+  {type:'task', uid:'t-bano-skincare', desde:'7:35', hasta:'7:55', icon:'🚿', titulo:'Baño + skincare', detalle:'Ducha, higiene y rutina de piel.', tag:'Preparación', tagClass:'tag-verde'},
+  {type:'task', uid:'t-vestirse-lider', desde:'7:55', hasta:'8:10', icon:'👔', titulo:'Vestirse como líder', detalle:'Ropa prolija y presencia profesional para arrancar enfocado.', tag:'Presencia', tagClass:'tag-verde'},
+  {type:'task', uid:'t-desayuno', desde:'8:10', hasta:'8:30', icon:'☕', titulo:'Desayuno', detalle:'Desayuno tranquilo antes del bloque de trabajo.', tag:'Energía', tagClass:'tag-verde'},
+
+  {type:'section', uid:'sec-bloque-trabajo', titulo:'Bloque de trabajo'},
+  {type:'task', uid:'t-limpieza-oficina', desde:'8:30', hasta:'8:45', icon:'🧹', titulo:'Limpieza oficina', detalle:'15 minutos para ordenar escritorio/oficina antes de trabajar.', tag:'Orden', tagClass:'tag-verde'},
+  {type:'task', uid:'t-reunion-equipo', desde:'8:45', hasta:'9:10', icon:'👥', titulo:'Reunión de equipo', detalle:'Alineación rápida del día, prioridades y bloqueos.', tag:'Equipo', tagClass:'tag-azul'},
+  {type:'task', uid:'t-prospeccion', desde:'9:10', hasta:'11:10', icon:'📞', titulo:'Prospección', detalle:'2 horas de mensajes, llamados, seguimiento y nuevos contactos.', tag:'Venta activa', tagClass:'tag-naranja'},
+  {type:'task', uid:'t-produccion-servicios-logistica', desde:'11:10', hasta:'12:30', icon:'⚙️', titulo:'Producción / servicios / logística', detalle:'Videos BOIS Burgers, tareas operativas, servicios y logística.', tag:'Producción', tagClass:'tag-azul'},
+
+  {type:'section', uid:'sec-mediodia', titulo:'Mediodía'},
+  {type:'task', uid:'t-almuerzo', desde:'12:30', hasta:'13:00', icon:'🍽️', titulo:'Almuerzo', detalle:'Pausa para comer y recargar energía.', tag:'Pausa', tagClass:'tag-verde'},
+  {type:'task', uid:'t-estudio-podcast', desde:'13:00', hasta:'13:40', icon:'📚', titulo:'Estudio', detalle:'Escuchar podcast de emprendedores, tomar ideas y aprendizajes.', tag:'Aprendizaje', tagClass:'tag-azul'},
+  {type:'task', uid:'t-limpieza-casa', desde:'13:40', hasta:'13:55', icon:'🏠', titulo:'Limpieza casa', detalle:'15 minutos de orden en casa.', tag:'Orden', tagClass:'tag-verde'},
+
+  {type:'section', uid:'sec-oficina-hernan', titulo:'Oficina / Hernán'},
+  {type:'task', uid:'t-cerrar-hernan', desde:'14:00', hasta:'15:30', icon:'✅', titulo:'Cerrar cosas con Hernán', detalle:'Resolver pendientes en oficina, decisiones, prioridades y próximos pasos.', tag:'Gestión', tagClass:'tag-naranja'},
+
+  {type:'section', uid:'sec-tarde-noche', titulo:'Tarde / noche'},
+  {type:'task', uid:'t-entrenamiento', desde:'19:00', hasta:'20:00', icon:'🏋️', titulo:'Entrenamiento', detalle:'Gimnasio, movimiento y disciplina física.', tag:'Disciplina', tagClass:'tag-verde'}
+];
+
+let rutinaItems = cargarRutinaConfig();
+let rutinaConfigAbierta = false;
+let rutinaEditDraft = null;
+
+function cloneRutina(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function cargarRutinaConfig() {
+  const guardada = leerJSON(storageKey('rutinaConfigV2'), null);
+  if (!Array.isArray(guardada) || !guardada.length) return cloneRutina(RUTINA_DEFAULT);
+  return guardada.map((it, i) => ({
+    type: it.type === 'section' ? 'section' : 'task',
+    uid: it.uid || ((it.type === 'section' ? 'sec-' : 'task-') + Date.now() + '-' + i),
+    titulo: it.titulo || (it.type === 'section' ? 'Nueva sección' : 'Nueva tarea'),
+    desde: it.desde || '',
+    hasta: it.hasta || '',
+    icon: it.icon || '•',
+    detalle: it.detalle || '',
+    tag: it.tag || '',
+    tagClass: it.tagClass || ''
+  }));
+}
+
+function guardarRutinaConfig() {
+  guardarJSON(storageKey('rutinaConfigV2'), rutinaItems);
+}
+
+function escHTML(v) {
+  return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function tagHTML(it) {
+  if (!it.tag) return '';
+  const cls = it.tagClass || 'tag-verde';
+  return `<span class="tag ${escHTML(cls)}">${escHTML(it.tag)}</span>`;
+}
+
+
+function leerSeccionesColapsadas() {
+  return leerJSON(storageKey('rutinaSeccionesColapsadasV1'), {});
+}
+
+function guardarSeccionesColapsadas(data) {
+  guardarJSON(storageKey('rutinaSeccionesColapsadasV1'), data || {});
+}
+
+function toggleRutinaSection(uid) {
+  const colapsadas = leerSeccionesColapsadas();
+  colapsadas[uid] = !colapsadas[uid];
+  guardarSeccionesColapsadas(colapsadas);
+  const selectorUid = (window.CSS && CSS.escape) ? CSS.escape(uid) : String(uid).replace(/"/g, '\"');
+  const el = document.querySelector('[data-section-uid="' + selectorUid + '"]');
+  if (el) el.classList.toggle('collapsed', !!colapsadas[uid]);
+}
+
+function contarTareasDeSeccion(items, startIndex) {
+  let count = 0;
+  for (let i = startIndex + 1; i < items.length; i++) {
+    if (items[i].type === 'section') break;
+    count++;
+  }
+  return count;
+}
+
+function renderRutinaTask(it, index) {
+  return `<div class="bloque" data-rid="${escHTML(it.uid)}" data-desde="${escHTML(it.desde)}" data-hasta="${escHTML(it.hasta)}" style="animation-delay:${Math.min(index * 0.035, 0.7)}s">
+      <span class="hora">${escHTML(it.desde || '--:--')}</span><span class="icono">${escHTML(it.icon || '•')}</span>
+      <div class="contenido"><p class="titulo">${escHTML(it.titulo)}</p><p class="detalle">${escHTML(it.detalle)}</p>${tagHTML(it)}</div>
+      <button class="check-btn" onclick="toggleCheck(this)">✓</button>
+    </div>`;
+}
+
+function renderRutinaUI() {
+  const cont = document.getElementById('rutina-list');
+  if (!cont) return;
+  const colapsadas = leerSeccionesColapsadas();
+  let html = '';
+  let abierto = false;
+
+  rutinaItems.forEach((it, index) => {
+    if (it.type === 'section') {
+      if (abierto) html += '</div></div>';
+      const uid = it.uid || ('sec-' + index);
+      const count = contarTareasDeSeccion(rutinaItems, index);
+      const collapsed = !!colapsadas[uid];
+      html += `<div class="rutina-section ${collapsed ? 'collapsed' : ''}" data-section-uid="${escHTML(uid)}">
+        <button class="rutina-section-btn" onclick="toggleRutinaSection('${escHTML(uid)}')" type="button">
+          <div class="seccion"><span class="rutina-section-title"><span class="rutina-section-chevron">⌄</span>${escHTML(it.titulo)} <span class="rutina-section-count">${count} tareas</span></span></div>
+        </button>
+        <div class="rutina-section-content">`;
+      abierto = true;
+      return;
+    }
+
+    if (!abierto) {
+      const uid = 'sec-sin-seccion';
+      const collapsed = !!colapsadas[uid];
+      html += `<div class="rutina-section ${collapsed ? 'collapsed' : ''}" data-section-uid="${uid}">
+        <button class="rutina-section-btn" onclick="toggleRutinaSection('${uid}')" type="button">
+          <div class="seccion"><span class="rutina-section-title"><span class="rutina-section-chevron">⌄</span>Sin sección</span></div>
+        </button>
+        <div class="rutina-section-content">`;
+      abierto = true;
+    }
+    html += renderRutinaTask(it, index);
+  });
+
+  if (abierto) html += '</div></div>';
+  cont.innerHTML = html;
+  cargarChecksRutina();
+  actualizarCumplimientoDia();
+  actualizarReloj();
+}
+
+function toggleConfigRutina() {
+  rutinaConfigAbierta = !rutinaConfigAbierta;
+  const panel = document.getElementById('rutina-config-panel');
+  if (!panel) return;
+  if (rutinaConfigAbierta) {
+    rutinaEditDraft = cloneRutina(rutinaItems);
+    panel.classList.add('show');
+    renderEditorRutina();
+  } else {
+    panel.classList.remove('show');
+    panel.innerHTML = '';
+  }
+}
+
+function renderEditorRutina() {
+  const panel = document.getElementById('rutina-config-panel');
+  if (!panel || !rutinaEditDraft) return;
+  panel.innerHTML = `
+    <div class="rutina-config-head">
+      <div>
+        <div class="card-titulo">Editar rutina</div>
+        <div class="card-sub">Usá ↑ ↓ para ordenar. Eliminá lo que no va y agregá nuevas tareas o secciones.</div>
+      </div>
+      <div class="cum-actions" style="margin-top:0">
+        <button class="mini-btn" onclick="agregarSeccionRutina()">+ Sección</button>
+        <button class="mini-btn" onclick="agregarTareaRutina()">+ Tarea</button>
+        <button class="mini-btn" onclick="guardarEditorRutina()">Guardar cambios</button>
+      </div>
+    </div>
+    <div class="rutina-config-note">Tip: para ordenar una tarea entre bloques, movela con las flechas. Para que el reloj detecte bien la tarea activa, completá hora inicio y fin, por ejemplo 13:30 y 15:30.</div>
+    <div class="rutina-editor-list">
+      ${rutinaEditDraft.map((it, i) => renderEditorItemRutina(it, i)).join('')}
+    </div>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="agregarSeccionRutina()">+ Sección</button>
+      <button class="mini-btn" onclick="agregarTareaRutina()">+ Tarea</button>
+      <button class="mini-btn" onclick="guardarEditorRutina()">Guardar y aplicar</button>
+      <button class="mini-btn" onclick="cancelarEditorRutina()">Cancelar</button>
+      <button class="mini-btn" onclick="restaurarRutinaOriginal()">Restaurar original</button>
+    </div>`;
+}
+
+function renderEditorItemRutina(it, i) {
+  const arriba = `<button class="rutina-icon-btn" onclick="moverItemRutina(${i},-1)" title="Subir">↑</button>`;
+  const abajo = `<button class="rutina-icon-btn" onclick="moverItemRutina(${i},1)" title="Bajar">↓</button>`;
+  const borrar = `<button class="rutina-icon-btn danger" onclick="borrarItemRutina(${i})" title="Eliminar">✕</button>`;
+  if (it.type === 'section') {
+    return `<div class="rutina-edit-row section">
+      <div class="rutina-edit-top"><div class="rutina-edit-label">Sección</div><div class="rutina-edit-actions">${arriba}${abajo}${borrar}</div></div>
+      <div class="rutina-fields full">
+        <div class="rutina-field"><label>Título de sección</label><input value="${escHTML(it.titulo)}" oninput="editarRutinaCampo(${i},'titulo',this.value)"></div>
+      </div>
+    </div>`;
+  }
+  return `<div class="rutina-edit-row">
+    <div class="rutina-edit-top"><div class="rutina-edit-label">Tarea ${i + 1}</div><div class="rutina-edit-actions">${arriba}${abajo}${borrar}</div></div>
+    <div class="rutina-fields">
+      <div class="rutina-field"><label>Inicio</label><input value="${escHTML(it.desde)}" placeholder="7:30" oninput="editarRutinaCampo(${i},'desde',this.value)"></div>
+      <div class="rutina-field"><label>Fin</label><input value="${escHTML(it.hasta)}" placeholder="8:00" oninput="editarRutinaCampo(${i},'hasta',this.value)"></div>
+      <div class="rutina-field"><label>Ícono</label><input value="${escHTML(it.icon)}" placeholder="⚙️" oninput="editarRutinaCampo(${i},'icon',this.value)"></div>
+      <div class="rutina-field"><label>Título</label><input value="${escHTML(it.titulo)}" placeholder="Nombre de la tarea" oninput="editarRutinaCampo(${i},'titulo',this.value)"></div>
+      <div class="rutina-field rutina-field-wide"><label>Detalle</label><textarea oninput="editarRutinaCampo(${i},'detalle',this.value)">${escHTML(it.detalle)}</textarea></div>
+      <div class="rutina-field"><label>Etiqueta</label><input value="${escHTML(it.tag)}" placeholder="Opcional" oninput="editarRutinaCampo(${i},'tag',this.value)"></div>
+      <div class="rutina-field"><label>Color etiqueta</label><select onchange="editarRutinaCampo(${i},'tagClass',this.value)">
+        <option value="" ${!it.tagClass?'selected':''}>Sin color</option>
+        <option value="tag-verde" ${it.tagClass==='tag-verde'?'selected':''}>Verde</option>
+        <option value="tag-azul" ${it.tagClass==='tag-azul'?'selected':''}>Azul</option>
+        <option value="tag-naranja" ${it.tagClass==='tag-naranja'?'selected':''}>Naranja</option>
+      </select></div>
+    </div>
+  </div>`;
+}
+
+function editarRutinaCampo(i, campo, valor) {
+  if (!rutinaEditDraft || !rutinaEditDraft[i]) return;
+  rutinaEditDraft[i][campo] = valor;
+}
+
+function moverItemRutina(i, dir) {
+  if (!rutinaEditDraft) return;
+  const j = i + dir;
+  if (j < 0 || j >= rutinaEditDraft.length) return;
+  [rutinaEditDraft[i], rutinaEditDraft[j]] = [rutinaEditDraft[j], rutinaEditDraft[i]];
+  renderEditorRutina();
+}
+
+function borrarItemRutina(i) {
+  if (!rutinaEditDraft) return;
+  const item = rutinaEditDraft[i];
+  if (!confirm('¿Eliminar "' + (item.titulo || 'este ítem') + '"?')) return;
+  rutinaEditDraft.splice(i, 1);
+  renderEditorRutina();
+}
+
+function agregarSeccionRutina() {
+  if (!rutinaEditDraft) rutinaEditDraft = cloneRutina(rutinaItems);
+  rutinaEditDraft.push({ type:'section', uid:'sec-' + Date.now(), titulo:'Nueva sección' });
+  renderEditorRutina();
+}
+
+function agregarTareaRutina() {
+  if (!rutinaEditDraft) rutinaEditDraft = cloneRutina(rutinaItems);
+  rutinaEditDraft.push({ type:'task', uid:'task-' + Date.now(), desde:'', hasta:'', icon:'•', titulo:'Nueva tarea', detalle:'', tag:'', tagClass:'' });
+  renderEditorRutina();
+}
+
+function limpiarRutinaDraft(items) {
+  return (items || []).map((it, i) => {
+    if (it.type === 'section') return { type:'section', uid:it.uid || ('sec-' + Date.now() + '-' + i), titulo:(it.titulo || 'Nueva sección').trim() };
+    return {
+      type:'task', uid:it.uid || ('task-' + Date.now() + '-' + i),
+      desde:(it.desde || '').trim(), hasta:(it.hasta || '').trim(), icon:(it.icon || '•').trim(),
+      titulo:(it.titulo || 'Nueva tarea').trim(), detalle:(it.detalle || '').trim(), tag:(it.tag || '').trim(), tagClass:it.tagClass || ''
+    };
+  }).filter(it => it.type === 'section' || it.titulo);
+}
+
+function guardarEditorRutina() {
+  rutinaItems = limpiarRutinaDraft(rutinaEditDraft);
+  guardarRutinaConfig();
+  renderRutinaUI();
+  renderEditorRutina();
+  mostrarNotif('Rutina actualizada.');
+}
+
+function cancelarEditorRutina() {
+  rutinaConfigAbierta = false;
+  const panel = document.getElementById('rutina-config-panel');
+  if (panel) { panel.classList.remove('show'); panel.innerHTML = ''; }
+}
+
+function restaurarRutinaOriginal() {
+  if (!confirm('¿Volver a la rutina original? Se reemplaza la configuración actual.')) return;
+  rutinaEditDraft = cloneRutina(RUTINA_DEFAULT);
+  rutinaItems = cloneRutina(RUTINA_DEFAULT);
+  guardarRutinaConfig();
+  renderRutinaUI();
+  renderEditorRutina();
+  mostrarNotif('Rutina original restaurada.');
+}
+
+
+// ── CONTROL DE TIEMPO ──
+const AREAS_TIEMPO = [
+  { id:'estudio', num:1, icon:'📚', nombre:'Estudio', objetivo:60*60, detalle:'Aprendizaje, lectura, calendario de gestión y repaso de ideas.' },
+  { id:'produccion', num:2, icon:'⚙️', nombre:'Producción / Servicios / Logística', objetivo:3*60*60, detalle:'Carta operativa, procesos, servicios, logística, delegar editor/vendedor y sistemas.' },
+  { id:'entrenamiento', num:3, icon:'🏋️', nombre:'Entrenamiento', objetivo:60*60, detalle:'Base, código, práctica, criterio y mejora personal.' },
+  { id:'prospeccion', num:4, icon:'📞', nombre:'Prospección', objetivo:2*60*60, detalle:'Contactos nuevos, llamados, mensajes, reuniones y seguimiento comercial.', extra:'prospeccion' },
+  { id:'limpieza', num:5, icon:'🧹', nombre:'Limpieza / Orden', objetivo:30*60, detalle:'15 minutos casa + 15 minutos oficina. Orden externo para claridad interna.', extra:'limpieza' },
+  { id:'contactos', num:6, icon:'🤝', nombre:'Contactos importantes / Gestiones estratégicas', objetivo:150*60, detalle:'Directores, empresarios, aliados, agentes que crean empresas, podcast, capital y relaciones.' }
+];
+const OBJETIVO_TOTAL_TIEMPO = AREAS_TIEMPO.reduce((a,b)=>a+b.objetivo,0);
+let tiempoActivo = leerJSON(storageKey('tiempoActivo'), null);
+let pomAreaId = leerJSON(storageKey('pomAreaId'), 'produccion');
+
+function keyTiempoHoy(){ return storageKey('tiempo:' + FECHA_RUTINA); }
+function leerTiempoDia(){
+  const base = leerJSON(keyTiempoHoy(), null);
+  return base || { totals:{}, sessions:[], counts:{ contactos:0, reuniones:0, clientes:0, limpiezaCasa:false, limpiezaOficina:false }, notes:{} };
+}
+function guardarTiempoDia(data){ guardarJSON(keyTiempoHoy(), data); }
+function getAreaTiempo(id){ return AREAS_TIEMPO.find(a=>a.id===id); }
+function fmtDur(seg){
+  seg = Math.max(0, Math.round(seg || 0));
+  const h = Math.floor(seg/3600), m = Math.floor((seg%3600)/60);
+  if (h && m) return h + 'h ' + String(m).padStart(2,'0') + 'm';
+  if (h) return h + 'h';
+  return m + 'm';
+}
+function totalAreaConActivo(id){
+  const data = leerTiempoDia();
+  let total = data.totals[id] || 0;
+  if (tiempoActivo && tiempoActivo.id === id) total += Math.max(0, Math.floor((Date.now() - new Date(tiempoActivo.startedAt).getTime())/1000));
+  return total;
+}
+function totalDiaConActivo(){ return AREAS_TIEMPO.reduce((acc,a)=>acc + totalAreaConActivo(a.id),0); }
+function iniciarArea(id){
+  if (tiempoActivo && tiempoActivo.id === id) { mostrarNotif('Ese contador ya está corriendo.'); return; }
+  if (tiempoActivo) pausarTiempo(false);
+  tiempoActivo = { id, startedAt: new Date().toISOString() };
+  guardarJSON(storageKey('tiempoActivo'), tiempoActivo);
+  renderTiempoUI();
+  mostrarNotif('▶ Iniciado: ' + getAreaTiempo(id).nombre);
+}
+function pausarTiempo(show=true){
+  if (!tiempoActivo) { if(show) mostrarNotif('No hay ningún contador activo.'); return; }
+  const fin = new Date();
+  const inicio = new Date(tiempoActivo.startedAt);
+  const segundos = Math.max(0, Math.floor((fin.getTime() - inicio.getTime())/1000));
+  const data = leerTiempoDia();
+  data.totals[tiempoActivo.id] = (data.totals[tiempoActivo.id] || 0) + segundos;
+  data.sessions.push({ id: tiempoActivo.id, desde: inicio.toISOString(), hasta: fin.toISOString(), segundos });
+  guardarTiempoDia(data);
+  const nombre = getAreaTiempo(tiempoActivo.id)?.nombre || 'área';
+  tiempoActivo = null;
+  localStorage.removeItem(storageKey('tiempoActivo'));
+  renderTiempoUI();
+  if(show) mostrarNotif('⏸ Guardado: ' + nombre + ' · ' + fmtDur(segundos));
+}
+function sumarManual(id){
+  const min = parseInt(prompt('¿Cuántos minutos querés sumar? Ej: 15, 30, 60'), 10);
+  if (!min || min < 1) return;
+  const data = leerTiempoDia();
+  const segundos = min * 60;
+  data.totals[id] = (data.totals[id] || 0) + segundos;
+  const ahora = new Date();
+  data.sessions.push({ id, desde: ahora.toISOString(), hasta: ahora.toISOString(), segundos, manual:true });
+  guardarTiempoDia(data);
+  renderTiempoUI();
+  mostrarNotif('+' + min + ' min en ' + getAreaTiempo(id).nombre);
+}
+function sumarRapido(id, minutos){
+  const data = leerTiempoDia();
+  const segundos = minutos * 60;
+  data.totals[id] = (data.totals[id] || 0) + segundos;
+  const ahora = new Date();
+  data.sessions.push({ id, desde: ahora.toISOString(), hasta: ahora.toISOString(), segundos, manual:true });
+  guardarTiempoDia(data);
+  renderTiempoUI();
+  mostrarNotif('+' + minutos + ' min guardados.');
+}
+function sumarTiempoPomodoro(id, segundos){
+  if (!id || !getAreaTiempo(id)) return;
+  if (tiempoActivo && tiempoActivo.id === id) { renderTiempoUI(); return; }
+  const data = leerTiempoDia();
+  data.totals[id] = (data.totals[id] || 0) + segundos;
+  const ahora = new Date();
+  data.sessions.push({ id, desde: ahora.toISOString(), hasta: ahora.toISOString(), segundos, pomodoro:true });
+  guardarTiempoDia(data);
+  renderTiempoUI();
+}
+function editarNotaArea(id){
+  const data = leerTiempoDia();
+  const actual = data.notes[id] || '';
+  const txt = prompt('Nota para ' + getAreaTiempo(id).nombre, actual);
+  if (txt === null) return;
+  data.notes[id] = txt;
+  guardarTiempoDia(data);
+  renderTiempoUI();
+}
+function cambiarContadorTiempo(nombre, delta){
+  const data = leerTiempoDia();
+  data.counts[nombre] = Math.max(0, (data.counts[nombre] || 0) + delta);
+  guardarTiempoDia(data);
+  renderTiempoUI();
+}
+function toggleLimpieza(nombre){
+  const data = leerTiempoDia();
+  data.counts[nombre] = !data.counts[nombre];
+  guardarTiempoDia(data);
+  renderTiempoUI();
+}
+function reiniciarTiempoHoy(){
+  if (!confirm('¿Seguro que querés reiniciar los tiempos de hoy?')) return;
+  tiempoActivo = null;
+  localStorage.removeItem(storageKey('tiempoActivo'));
+  guardarTiempoDia({ totals:{}, sessions:[], counts:{ contactos:0, reuniones:0, clientes:0, limpiezaCasa:false, limpiezaOficina:false }, notes:{} });
+  renderTiempoUI();
+  mostrarNotif('Tiempos de hoy reiniciados.');
+}
+function exportarTiempo(){
+  const data = leerTiempoDia();
+  const resumen = {
+    fecha: FECHA_RUTINA,
+    objetivoTotal: fmtDur(OBJETIVO_TOTAL_TIEMPO),
+    totalTrabajado: fmtDur(totalDiaConActivo()),
+    areas: AREAS_TIEMPO.map(a => ({ numero:a.num, area:a.nombre, objetivo:fmtDur(a.objetivo), trabajado:fmtDur(totalAreaConActivo(a.id)), segundos:totalAreaConActivo(a.id), nota:data.notes[a.id] || '' })),
+    contadores: data.counts,
+    sesiones: data.sessions
+  };
+  const blob = new Blob([JSON.stringify(resumen, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tiempos-' + FECHA_RUTINA + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  mostrarNotif('Tiempos exportados.');
+}
+function renderPomAreaList(){
+  const wrap = document.getElementById('pom-area-list');
+  if (!wrap) return;
+  wrap.innerHTML = AREAS_TIEMPO.map(a => `<button class="pom-area-btn ${pomAreaId===a.id?'active':''}" onclick="setPomArea('${a.id}',this)">${a.num}. ${a.nombre}</button>`).join('');
+}
+function setPomArea(id, btn){
+  pomAreaId = id;
+  guardarJSON(storageKey('pomAreaId'), pomAreaId);
+  renderPomAreaList();
+  mostrarNotif('Pomodoro asignado a: ' + getAreaTiempo(id).nombre);
+}
+function actualizarResumenTiempo(){
+  const data = leerTiempoDia();
+  const total = totalDiaConActivo();
+  const pct = Math.min(100, Math.round(total / OBJETIVO_TOTAL_TIEMPO * 100));
+  const faltan = Math.max(0, OBJETIVO_TOTAL_TIEMPO - total);
+  const totalEl = document.getElementById('tiempo-total-hoy');
+  if (!totalEl) return data;
+  totalEl.textContent = fmtDur(total);
+  document.getElementById('tiempo-resumen').textContent = 'Objetivo diario: 10h · faltan ' + fmtDur(faltan);
+  document.getElementById('tiempo-barra-total').style.width = pct + '%';
+  document.getElementById('tiempo-pct').textContent = pct + '%';
+  document.getElementById('tiempo-faltan').textContent = fmtDur(faltan);
+  document.getElementById('tiempo-sesiones').textContent = data.sessions.length;
+
+  const activeBox = document.getElementById('tiempo-active-box');
+  if (activeBox) {
+    if (tiempoActivo) {
+      const a = getAreaTiempo(tiempoActivo.id);
+      const seg = Math.max(0, Math.floor((Date.now() - new Date(tiempoActivo.startedAt).getTime())/1000));
+      activeBox.classList.add('show');
+      document.getElementById('tiempo-active-text').innerHTML = '▶ Ahora: <strong>' + a.nombre + '</strong> · ' + fmtDur(seg);
+    } else {
+      activeBox.classList.remove('show');
+    }
+  }
+  return data;
+}
+
+function actualizarAreaCardsTiempo(){
+  AREAS_TIEMPO.forEach(a => {
+    const card = document.querySelector(`.area-card[data-area-id="${a.id}"]`);
+    if (!card) return;
+    const hecho = totalAreaConActivo(a.id);
+    const apct = Math.min(100, Math.round(hecho/a.objetivo*100));
+    const falta = Math.max(0, a.objetivo - hecho);
+    const hechoEl = card.querySelector('[data-role="hecho"]');
+    const barraEl = card.querySelector('[data-role="barra"]');
+    const estadoEl = card.querySelector('[data-role="estado"]');
+    const btnEl = card.querySelector('[data-role="start-btn"]');
+    if (hechoEl) hechoEl.textContent = fmtDur(hecho);
+    if (barraEl) barraEl.style.width = apct + '%';
+    if (estadoEl) estadoEl.textContent = apct + '% · ' + (falta > 0 ? 'faltan ' + fmtDur(falta) : 'objetivo cumplido');
+    if (btnEl) {
+      const activo = tiempoActivo && tiempoActivo.id === a.id;
+      btnEl.textContent = activo ? 'Corriendo' : 'Iniciar';
+      btnEl.classList.toggle('active', activo);
+    }
+    card.classList.toggle('active', tiempoActivo && tiempoActivo.id === a.id);
+  });
+}
+
+function actualizarTiempoTick(){
+  // Antes se reconstruía toda la sección cada segundo con innerHTML.
+  // Eso hacía que las tarjetas se vuelvan a animar y parezca que parpadean.
+  // Ahora solo actualizamos los números, barras y estado activo.
+  actualizarResumenTiempo();
+  actualizarAreaCardsTiempo();
+}
+
+function renderTiempoUI(){
+  const cont = document.getElementById('areas-tiempo');
+  if (!cont) return;
+  const data = actualizarResumenTiempo();
+  cont.innerHTML = AREAS_TIEMPO.map((a,idx) => {
+    const hecho = totalAreaConActivo(a.id);
+    const apct = Math.min(100, Math.round(hecho/a.objetivo*100));
+    const falta = Math.max(0, a.objetivo - hecho);
+    const nota = data.notes[a.id] || '';
+    let extra = '';
+    if (a.extra === 'prospeccion') {
+      extra = `<div class="area-extra">
+        <div class="mini-counter"><strong>${data.counts.contactos || 0}</strong><span>contactos / 10</span></div>
+        <div class="mini-counter"><strong>${data.counts.reuniones || 0}</strong><span>reuniones</span></div>
+        <div class="mini-counter"><strong>${data.counts.clientes || 0}</strong><span>clientes</span></div>
+        <button class="mini-btn" onclick="cambiarContadorTiempo('contactos',1)">+ contacto</button>
+        <button class="mini-btn" onclick="cambiarContadorTiempo('reuniones',1)">+ reunión</button>
+        <button class="mini-btn" onclick="cambiarContadorTiempo('clientes',1)">+ cliente</button>
+      </div>`;
+    }
+    if (a.extra === 'limpieza') {
+      extra = `<div class="area-extra">
+        <button class="check-mini ${data.counts.limpiezaCasa?'done':''}" onclick="toggleLimpieza('limpiezaCasa')">${data.counts.limpiezaCasa?'✓':'○'} Casa</button>
+        <button class="check-mini ${data.counts.limpiezaOficina?'done':''}" onclick="toggleLimpieza('limpiezaOficina')">${data.counts.limpiezaOficina?'✓':'○'} Oficina</button>
+      </div>`;
+    }
+    return `<div class="area-card ${tiempoActivo?.id===a.id?'active':''}" data-area-id="${a.id}">
+      <div class="area-head">
+        <div class="area-title-wrap">
+          <div class="area-num">${a.num}</div>
+          <div><div class="area-title">${a.icon} ${a.nombre}</div><div class="area-detail">${a.detalle}</div></div>
+        </div>
+        <div class="area-time"><div class="hecho" data-role="hecho">${fmtDur(hecho)}</div><div class="obj">de ${fmtDur(a.objetivo)}</div></div>
+      </div>
+      <div class="barra-wrap"><div class="barra-fill" data-role="barra" style="width:${apct}%;background:var(--teal-mid)"></div></div>
+      <div data-role="estado" style="font-size:12px;color:var(--ink-faint);margin-top:4px">${apct}% · ${falta>0?'faltan ' + fmtDur(falta):'objetivo cumplido'}</div>
+      ${extra}
+      ${nota ? `<div class="area-detail" style="margin-top:8px"><strong>Nota:</strong> ${nota}</div>` : ''}
+      <div class="area-actions">
+        <button data-role="start-btn" class="mini-btn ${tiempoActivo?.id===a.id?'active':''}" onclick="iniciarArea('${a.id}')">${tiempoActivo?.id===a.id?'Corriendo':'Iniciar'}</button>
+        <button class="mini-btn" onclick="sumarRapido('${a.id}',15)">+15m</button>
+        <button class="mini-btn" onclick="sumarManual('${a.id}')">+ Manual</button>
+        <button class="mini-btn" onclick="editarNotaArea('${a.id}')">Nota</button>
+      </div>
+    </div>`;
+  }).join('');
+  const sesiones = [...data.sessions].slice(-8).reverse();
+  document.getElementById('session-list').innerHTML = sesiones.length ? sesiones.map(s => {
+    const a = getAreaTiempo(s.id);
+    const d = new Date(s.desde);
+    return `<div class="session-item"><div><strong>${a?.nombre || s.id}</strong><br>${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ${s.manual?'· manual':s.pomodoro?'· pomodoro':''}</div><div>${fmtDur(s.segundos)}</div></div>`;
+  }).join('') : '<div class="session-item">Todavía no hay sesiones cargadas hoy.</div>';
+  renderPomAreaList();
+}
+setInterval(actualizarTiempoTick, 1000);
+
 // ── POMODORO ──
 let pomTotal=25*60, pomRest=25*60, pomInt=null, pomOn=false, pomDone=leerJSON(storageKey('pomDone:' + FECHA_RUTINA),0), pomLabel='Trabajo profundo';
 function fmtT(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 function updPom(){ document.getElementById('pom-display').textContent=fmtT(pomRest); document.getElementById('pom-barra').style.width=((pomTotal-pomRest)/pomTotal*100)+'%'; }
 function setModo(min,lbl,btn){ document.querySelectorAll('.pom-modo').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); pomTotal=min*60; pomRest=pomTotal; pomLabel=lbl; pomOn=false; clearInterval(pomInt); document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=lbl+' — listos para arrancar'; updPom(); }
-function togglePom(){ if(pomOn){ clearInterval(pomInt); pomOn=false; document.getElementById('pom-toggle').textContent='▶ Continuar'; document.getElementById('pom-estado').textContent=pomLabel+' — pausado'; } else { pomOn=true; document.getElementById('pom-toggle').textContent='⏸ Pausar'; document.getElementById('pom-estado').textContent=pomLabel+' — en curso'; pomInt=setInterval(()=>{ pomRest--; updPom(); if(pomRest<=0){ clearInterval(pomInt); pomOn=false; pomDone++; guardarJSON(storageKey('pomDone:' + FECHA_RUTINA), pomDone); document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent='¡Completado! Descansá.'; document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; mostrarNotif('🎉 ¡Pomodoro listo! Tomá un descanso.'); } },1000); document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`; } }
+function togglePom(){
+  if(pomOn){
+    clearInterval(pomInt);
+    pomOn=false;
+    document.getElementById('pom-toggle').textContent='▶ Continuar';
+    document.getElementById('pom-estado').textContent=pomLabel+' — pausado';
+  } else {
+    pomOn=true;
+    document.getElementById('pom-toggle').textContent='⏸ Pausar';
+    const area = getAreaTiempo(pomAreaId);
+    document.getElementById('pom-estado').textContent=pomLabel+' — en curso' + (area ? ' · ' + area.nombre : '');
+    pomInt=setInterval(()=>{
+      pomRest--;
+      updPom();
+      if(pomRest<=0){
+        clearInterval(pomInt);
+        pomOn=false;
+        pomDone++;
+        guardarJSON(storageKey('pomDone:' + FECHA_RUTINA), pomDone);
+        if (pomLabel.toLowerCase().includes('trabajo')) sumarTiempoPomodoro(pomAreaId, pomTotal);
+        document.getElementById('pom-toggle').textContent='▶ Arrancar';
+        document.getElementById('pom-estado').textContent='¡Completado! Descansá.';
+        document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`;
+        mostrarNotif('🎉 Pomodoro listo y tiempo guardado.');
+      }
+    },1000);
+    document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`;
+  }
+}
 function resetPom(){ clearInterval(pomInt); pomOn=false; pomRest=pomTotal; document.getElementById('pom-toggle').textContent='▶ Arrancar'; document.getElementById('pom-estado').textContent=pomLabel+' — listos para arrancar'; updPom(); }
 updPom();
 
@@ -836,8 +1509,8 @@ let nTO;
 function mostrarNotif(msg){ const n=document.getElementById('notif'); n.textContent=msg; n.classList.add('show'); clearTimeout(nTO); nTO=setTimeout(()=>n.classList.remove('show'),3000); }
 
 // ── INIT ──
-cargarChecksRutina();
-actualizarCumplimientoDia();
+renderRutinaUI();
+renderTiempoUI();
 buildCalendario();
 actualizarClientesUI();
 actualizarPills();
