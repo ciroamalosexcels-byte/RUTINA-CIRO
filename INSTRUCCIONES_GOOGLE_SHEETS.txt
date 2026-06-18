@@ -1,0 +1,32 @@
+CONFIGURAR GOOGLE SHEETS EN RUTINA CIRO
+
+1) Crear un Google Sheet vacío.
+2) Ir a Extensiones > Apps Script.
+3) Borrar el código que aparece y pegar el contenido de google_sheets_apps_script.gs.
+4) Guardar el proyecto.
+5) Ir a Implementar > Nueva implementación.
+6) Elegir tipo: Aplicación web.
+7) Ejecutar como: Yo.
+8) Quién tiene acceso: Cualquier persona.
+9) Implementar y aceptar permisos.
+10) Copiar la URL que termina en /exec.
+11) Abrir la app > pestaña Sheets > pegar el link API > Guardar link API.
+12) Tocar Probar conexión y luego Sincronizar ahora.
+
+La primera sincronización crea estas pestañas en tu Google Sheet:
+- Dashboard
+- Config
+- Rutina
+- Tiempo_Areas
+- Tiempo_Sesiones
+- Pomodoro
+- Cumplimiento
+- Clientes
+- BackupJSON
+- HistorialSync
+
+IMPORTANTE:
+- La app sigue guardando localmente aunque no haya internet.
+- Si activás la sincronización automática, cada cambio se guarda en Google Sheets unos segundos después.
+- El botón Cargar desde Sheets restaura en la app el último backup guardado en BackupJSON.
+- Si cambiás el Apps Script, tenés que volver a Implementar > Administrar implementaciones > Editar > Nueva versión.

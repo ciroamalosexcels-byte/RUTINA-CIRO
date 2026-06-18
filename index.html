@@ -33,7 +33,7 @@
   .reloj-wrap { text-align: right; }
   .reloj { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -0.03em; line-height: 1; color: var(--cream); }
   .reloj-tarea { font-size: 11px; color: rgba(245,242,236,0.5); margin-top: 2px; max-width: 160px; text-align: right; line-height: 1.3; }
-  .tabs { max-width: 680px; margin: 1rem auto 0; display: flex; gap: 6px; }
+  .tabs { max-width: 680px; margin: 1rem auto 0; display: flex; gap: 6px; overflow-x:auto; padding-bottom:1px; }
   .tab { background: none; border: 1px solid rgba(245,242,236,0.2); border-bottom: none; color: rgba(245,242,236,0.6); padding: 6px 18px; border-radius: 99px 99px 0 0; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
   .tab.active { background: var(--cream); color: var(--ink); border-color: var(--cream); }
   .tab:not(.active):hover { background: rgba(245,242,236,0.1); color: var(--cream); }
@@ -278,6 +278,23 @@
     .rutina-fields .rutina-field:nth-child(4) { grid-column:1 / -1; }
   }
 
+
+
+  /* GOOGLE SHEETS */
+  .sheets-status { background: var(--cream); border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-top: 10px; }
+  .sheets-status.ok { background: var(--teal-light); color: var(--teal); border-color: rgba(29,158,117,.35); font-weight: 600; }
+  .sheets-status.err { background: #fff1f1; color: #9d2c2c; border-color: rgba(157,44,44,.22); font-weight: 600; }
+  .api-input { width: 100%; border: 1px solid var(--border-strong); background: white; border-radius: 12px; padding: 11px 12px; font-family:'DM Sans', sans-serif; font-size: 13px; color: var(--ink); outline:none; margin-top: 10px; }
+  .api-input:focus { border-color: var(--teal-mid); box-shadow:0 0 0 3px rgba(29,158,117,.1); }
+  .steps-list { font-size:13px; color:var(--ink-soft); line-height:1.75; padding-left: 1.1rem; margin-top: 10px; }
+  .sync-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; margin-top: 12px; }
+  .sync-tile { background:var(--cream); border:1px solid var(--border); border-radius:12px; padding:12px; }
+  .sync-tile strong { display:block; font-size:13px; color:var(--ink); margin-bottom:4px; }
+  .sync-tile span { font-size:11px; color:var(--ink-faint); line-height:1.4; }
+  .switch-row { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:13px; color:var(--ink-soft); }
+  .switch-row input { width:16px; height:16px; accent-color: var(--teal-mid); }
+  @media (max-width: 560px) { .sync-grid { grid-template-columns:1fr; } }
+
   .footer-space { height: 2rem; }
 </style>
 </head>
@@ -299,6 +316,7 @@
     <button class="tab" onclick="cambiarTab('pomodoro',this)">Pomodoro</button>
     <button class="tab" onclick="cambiarTab('cumplimiento',this)">Cumplimiento</button>
     <button class="tab" onclick="cambiarTab('clientes',this)">Clientes</button>
+    <button class="tab" onclick="cambiarTab('sheets',this)">Sheets</button>
   </div>
 </header>
 
@@ -463,6 +481,56 @@
   </div>
   <div class="footer-space"></div>
 </div>
+
+
+<!-- GOOGLE SHEETS -->
+<div id="tab-sheets" class="view">
+  <div style="height:1rem"></div>
+  <div class="card">
+    <div class="card-titulo">Google Sheets — base central de la app</div>
+    <div class="card-sub">Pegá acá la URL del Web App de Apps Script para que rutina, tiempo, cumplimiento, pomodoro y clientes se guarden en tu Google Sheet.</div>
+    <input class="api-input" id="sheets-api-url" placeholder="Pegá la URL que termina en /exec">
+    <label class="switch-row"><input type="checkbox" id="sheets-auto-sync"> Sincronizar automáticamente cuando guardo cambios</label>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="guardarSheetsConfig()">Guardar link API</button>
+      <button class="mini-btn" onclick="probarSheets()">Probar conexión</button>
+      <button class="mini-btn" onclick="sincronizarSheetsManual()">Sincronizar ahora</button>
+      <button class="mini-btn" onclick="cargarDesdeSheets()">Cargar desde Sheets</button>
+    </div>
+    <div id="sheets-status" class="sheets-status">Sin configurar. Primero creá el Google Sheet, pegá el Apps Script y guardá acá la URL /exec.</div>
+  </div>
+
+  <div class="sync-grid">
+    <div class="sync-tile"><strong>Rutina</strong><span>Secciones, tareas, horarios, etiquetas y checks diarios.</span></div>
+    <div class="sync-tile"><strong>Tiempo</strong><span>Resumen por área, sesiones, notas, contactos, reuniones y limpieza.</span></div>
+    <div class="sync-tile"><strong>Cumplimiento</strong><span>Calendario histórico de progreso y racha.</span></div>
+    <div class="sync-tile"><strong>Clientes</strong><span>Meta comercial, calendario de visitas y clientes cerrados.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">Cómo configurarlo</div>
+    <ol class="steps-list">
+      <li>Creá un Google Sheet vacío.</li>
+      <li>Andá a <strong>Extensiones → Apps Script</strong>.</li>
+      <li>Pegá el archivo <strong>google_sheets_apps_script.gs</strong> que va dentro del ZIP.</li>
+      <li>Tocá <strong>Implementar → Nueva implementación → Aplicación web</strong>.</li>
+      <li>Ejecutar como: <strong>Yo</strong>. Acceso: <strong>Cualquier persona</strong>.</li>
+      <li>Copiá la URL que termina en <strong>/exec</strong> y pegala arriba.</li>
+    </ol>
+    <div class="sheets-status">La primera sincronización crea estas pestañas: Dashboard, Config, Rutina, Tiempo_Areas, Tiempo_Sesiones, Pomodoro, Cumplimiento, Clientes, BackupJSON e HistorialSync.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">Última sincronización</div>
+    <div class="card-sub" id="sheets-last-sync">Todavía no sincronizaste con Google Sheets.</div>
+    <div class="cum-actions">
+      <button class="mini-btn" onclick="exportarSnapshotSheets()">Descargar backup JSON</button>
+      <button class="mini-btn" onclick="limpiarSheetsConfig()">Borrar link API</button>
+    </div>
+  </div>
+  <div class="footer-space"></div>
+</div>
+
 </main>
 <div class="notif" id="notif"></div>
 
@@ -487,6 +555,7 @@ function leerJSON(clave, fallback) {
 function guardarJSON(clave, valor) {
   try {
     localStorage.setItem(clave, JSON.stringify(valor));
+    try { if (window.__SHEETS_AUTO_SYNC_READY && !window.__SHEETS_SUSPEND_SYNC) scheduleSheetsSync(); } catch(_) {}
   } catch(e) {}
 }
 
@@ -500,6 +569,189 @@ function normalizarId(txt) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+
+// ── GOOGLE SHEETS SYNC ──
+window.__SHEETS_AUTO_SYNC_READY = false;
+window.__SHEETS_SUSPEND_SYNC = false;
+let sheetsSyncTimer = null;
+let sheetsSyncing = false;
+
+function getSheetsApiUrl(){
+  return leerJSON(storageKey('sheetsApiUrl'), '').trim();
+}
+function getSheetsAutoSync(){
+  return leerJSON(storageKey('sheetsAutoSync'), true) !== false;
+}
+function setSheetsStatus(msg, tipo=''){
+  const el = document.getElementById('sheets-status');
+  if (!el) return;
+  el.className = 'sheets-status' + (tipo ? ' ' + tipo : '');
+  el.textContent = msg;
+}
+function actualizarSheetsUI(){
+  const input = document.getElementById('sheets-api-url');
+  const chk = document.getElementById('sheets-auto-sync');
+  const last = document.getElementById('sheets-last-sync');
+  if (input) input.value = getSheetsApiUrl();
+  if (chk) chk.checked = getSheetsAutoSync();
+  const ultima = leerJSON(storageKey('sheetsLastSync'), '');
+  if (last) last.textContent = ultima ? ('Última sincronización: ' + new Date(ultima).toLocaleString('es-AR')) : 'Todavía no sincronizaste con Google Sheets.';
+}
+function guardarSheetsConfig(){
+  const input = document.getElementById('sheets-api-url');
+  const chk = document.getElementById('sheets-auto-sync');
+  const url = (input?.value || '').trim();
+  if (url && !url.includes('/exec')) {
+    if (!confirm('La URL no parece terminar en /exec. ¿Guardarla igual?')) return;
+  }
+  window.__SHEETS_SUSPEND_SYNC = true;
+  guardarJSON(storageKey('sheetsApiUrl'), url);
+  guardarJSON(storageKey('sheetsAutoSync'), !!chk?.checked);
+  window.__SHEETS_SUSPEND_SYNC = false;
+  actualizarSheetsUI();
+  setSheetsStatus(url ? 'Link API guardado. Ahora probá conexión o sincronizá.' : 'Link API borrado.', url ? 'ok' : '');
+  mostrarNotif(url ? 'Google Sheets configurado.' : 'Link borrado.');
+}
+function limpiarSheetsConfig(){
+  if (!confirm('¿Borrar el link API de Google Sheets en esta app?')) return;
+  window.__SHEETS_SUSPEND_SYNC = true;
+  localStorage.removeItem(storageKey('sheetsApiUrl'));
+  window.__SHEETS_SUSPEND_SYNC = false;
+  actualizarSheetsUI();
+  setSheetsStatus('Link API borrado. La app seguirá guardando localmente.', '');
+}
+function scheduleSheetsSync(){
+  if (!getSheetsApiUrl() || !getSheetsAutoSync()) return;
+  clearTimeout(sheetsSyncTimer);
+  sheetsSyncTimer = setTimeout(() => sincronizarSheets(false), 2500);
+}
+async function sheetsRequest(action, payload={}){
+  const url = getSheetsApiUrl();
+  if (!url) throw new Error('Falta configurar el link API /exec de Apps Script.');
+  const res = await fetch(url, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
+  const txt = await res.text();
+  try { return JSON.parse(txt); }
+  catch(e) { return { ok:false, error:'Respuesta no JSON: ' + txt.slice(0,220) }; }
+}
+function dumpLocalStorageRutina(){
+  const out = {};
+  for (let i=0;i<localStorage.length;i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(STORAGE_NS + ':')) out[k] = localStorage.getItem(k);
+  }
+  return out;
+}
+function crearSnapshotApp(){
+  const tiempoData = (typeof leerTiempoDia === 'function') ? leerTiempoDia() : {};
+  const areas = (typeof AREAS_TIEMPO !== 'undefined') ? AREAS_TIEMPO.map(a => {
+    const trabajado = (typeof totalAreaConActivo === 'function') ? totalAreaConActivo(a.id) : ((tiempoData.totals||{})[a.id] || 0);
+    return { ...a, objetivoMinutos: Math.round(a.objetivo/60), trabajadoSegundos: trabajado, trabajadoMinutos: Math.round(trabajado/60), nota: (tiempoData.notes || {})[a.id] || '' };
+  }) : [];
+  const totalTrabajado = areas.reduce((acc,a)=>acc+(a.trabajadoSegundos||0),0);
+  return {
+    version: 'rutina-ciro-sheets-v1',
+    exportedAt: new Date().toISOString(),
+    fechaActual: (typeof FECHA_RUTINA !== 'undefined') ? FECHA_RUTINA : fechaISO(new Date()),
+    rutina: (typeof rutinaItems !== 'undefined') ? rutinaItems : [],
+    areasTiempo: (typeof AREAS_TIEMPO !== 'undefined') ? AREAS_TIEMPO : [],
+    tiempo: {
+      fecha: (typeof FECHA_RUTINA !== 'undefined') ? FECHA_RUTINA : fechaISO(new Date()),
+      objetivoTotalSegundos: (typeof OBJETIVO_TOTAL_TIEMPO !== 'undefined') ? OBJETIVO_TOTAL_TIEMPO : 0,
+      totalTrabajadoSegundos: totalTrabajado,
+      totalTrabajadoMinutos: Math.round(totalTrabajado/60),
+      data: tiempoData,
+      areas
+    },
+    cumplimiento: (typeof leerProgresoRutina === 'function') ? leerProgresoRutina() : {},
+    checksHoy: (typeof leerChecksDeHoy === 'function') ? leerChecksDeHoy() : {},
+    clientes: { total: (typeof clientes !== 'undefined') ? clientes : 0, calEstado: (typeof calEstado !== 'undefined') ? calEstado : {} },
+    pomodoro: { areaId: (typeof pomAreaId !== 'undefined') ? pomAreaId : '', completadosHoy: (typeof pomDone !== 'undefined') ? pomDone : 0 },
+    rawLocalStorage: dumpLocalStorageRutina()
+  };
+}
+async function probarSheets(){
+  guardarSheetsConfig();
+  setSheetsStatus('Probando conexión...', '');
+  try {
+    const r = await sheetsRequest('ping', { app:'Rutina Ciro' });
+    if (r.ok) setSheetsStatus('Conexión OK. Sheet conectado: ' + (r.spreadsheetName || 'Google Sheet'), 'ok');
+    else setSheetsStatus('Error: ' + (r.error || 'no se pudo conectar'), 'err');
+  } catch(e) { setSheetsStatus('Error de conexión: ' + e.message, 'err'); }
+}
+async function sincronizarSheetsManual(){
+  guardarSheetsConfig();
+  await sincronizarSheets(true);
+}
+async function sincronizarSheets(showNotif=true){
+  if (sheetsSyncing) return;
+  const url = getSheetsApiUrl();
+  if (!url) { if(showNotif) setSheetsStatus('Primero pegá el link API /exec.', 'err'); return; }
+  sheetsSyncing = true;
+  if (showNotif) setSheetsStatus('Sincronizando todos los datos con Google Sheets...', '');
+  try {
+    const snapshot = crearSnapshotApp();
+    const r = await sheetsRequest('syncAll', { snapshot });
+    if (r.ok) {
+      const now = new Date().toISOString();
+      window.__SHEETS_SUSPEND_SYNC = true;
+      guardarJSON(storageKey('sheetsLastSync'), now);
+      window.__SHEETS_SUSPEND_SYNC = false;
+      actualizarSheetsUI();
+      setSheetsStatus('Sincronizado OK. Se actualizaron las pestañas del sistema en tu Google Sheet.', 'ok');
+      if (showNotif) mostrarNotif('Sincronizado con Google Sheets.');
+    } else {
+      setSheetsStatus('Error al sincronizar: ' + (r.error || 'sin detalle'), 'err');
+      if (showNotif) mostrarNotif('No se pudo sincronizar.');
+    }
+  } catch(e) { setSheetsStatus('Error al sincronizar: ' + e.message, 'err'); if (showNotif) mostrarNotif('Error con Google Sheets.'); }
+  finally { sheetsSyncing = false; }
+}
+function aplicarSnapshotApp(snapshot){
+  if (!snapshot) throw new Error('No llegó ningún backup desde Sheets.');
+  window.__SHEETS_SUSPEND_SYNC = true;
+  try {
+    if (snapshot.rawLocalStorage && typeof snapshot.rawLocalStorage === 'object') Object.entries(snapshot.rawLocalStorage).forEach(([k,v]) => localStorage.setItem(k, v));
+    if (Array.isArray(snapshot.rutina)) guardarJSON(storageKey('rutinaConfigV2'), snapshot.rutina);
+    if (snapshot.cumplimiento) guardarJSON(storageKey('progresoRutina'), snapshot.cumplimiento);
+    if (snapshot.checksHoy) guardarJSON(storageKey('checks:' + (snapshot.fechaActual || FECHA_RUTINA)), snapshot.checksHoy);
+    if (snapshot.tiempo?.data) guardarJSON(storageKey('tiempo:' + (snapshot.tiempo.fecha || snapshot.fechaActual || FECHA_RUTINA)), snapshot.tiempo.data);
+    if (snapshot.clientes) { guardarJSON(storageKey('clientes'), Number(snapshot.clientes.total || 0)); guardarJSON(storageKey('calEstadoVentas'), snapshot.clientes.calEstado || {}); }
+    if (snapshot.pomodoro) { guardarJSON(storageKey('pomAreaId'), snapshot.pomodoro.areaId || 'produccion'); guardarJSON(storageKey('pomDone:' + (snapshot.fechaActual || FECHA_RUTINA)), Number(snapshot.pomodoro.completadosHoy || 0)); }
+  } finally { window.__SHEETS_SUSPEND_SYNC = false; }
+  if (typeof cargarRutinaConfig === 'function') rutinaItems = cargarRutinaConfig();
+  if (typeof clientes !== 'undefined') clientes = leerJSON(storageKey('clientes'), 0);
+  if (typeof calEstado !== 'undefined') calEstado = leerJSON(storageKey('calEstadoVentas'), {});
+  if (typeof pomAreaId !== 'undefined') pomAreaId = leerJSON(storageKey('pomAreaId'), 'produccion');
+  if (typeof pomDone !== 'undefined') pomDone = leerJSON(storageKey('pomDone:' + FECHA_RUTINA),0);
+  if (typeof renderRutinaUI === 'function') renderRutinaUI();
+  if (typeof renderTiempoUI === 'function') renderTiempoUI();
+  if (typeof buildCalendario === 'function') buildCalendario();
+  if (typeof actualizarClientesUI === 'function') actualizarClientesUI();
+  if (typeof actualizarResumenCumplimiento === 'function') actualizarResumenCumplimiento();
+  actualizarSheetsUI();
+}
+async function cargarDesdeSheets(){
+  if (!confirm('Esto va a reemplazar los datos locales de esta app con el último backup guardado en Google Sheets. ¿Continuar?')) return;
+  setSheetsStatus('Cargando último backup desde Google Sheets...', '');
+  try {
+    const r = await sheetsRequest('pullAll', {});
+    if (!r.ok) throw new Error(r.error || 'No se pudo leer BackupJSON.');
+    aplicarSnapshotApp(r.snapshot);
+    setSheetsStatus('Datos cargados desde Google Sheets en esta app.', 'ok');
+    mostrarNotif('Datos cargados desde Sheets.');
+  } catch(e) { setSheetsStatus('Error al cargar: ' + e.message, 'err'); }
+}
+function exportarSnapshotSheets(){
+  const snapshot = crearSnapshotApp();
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'backup-rutina-ciro-' + fechaISO(new Date()) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  mostrarNotif('Backup JSON descargado.');
 }
 
 const FECHA_RUTINA = fechaISO(new Date());
@@ -823,6 +1075,7 @@ function cambiarTab(id, btn) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  if (id === 'sheets') actualizarSheetsUI();
 }
 
 // ── CHECK ──
@@ -1515,6 +1768,8 @@ buildCalendario();
 actualizarClientesUI();
 actualizarPills();
 document.getElementById('pom-ses').textContent=`Sesión ${pomDone+1} de hoy · ${pomDone} completadas`;
+actualizarSheetsUI();
+window.__SHEETS_AUTO_SYNC_READY = true;
 </script>
 </body>
 </html>
