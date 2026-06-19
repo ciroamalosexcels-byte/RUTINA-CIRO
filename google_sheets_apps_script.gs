@@ -20,7 +20,19 @@ const SHEETS = {
 };
 
 function doGet(e) {
-  return jsonResponse({ ok: true, app: APP_NAME, message: 'API activa', time: new Date().toISOString() });
+  try {
+    const action = (e && e.parameter && e.parameter.action) || 'ping';
+    const callback = e && e.parameter && e.parameter.callback;
+    let out;
+    if (action === 'ping') out = handlePing_();
+    else if (action === 'pullAll') out = handlePullAll_();
+    else out = { ok: true, app: APP_NAME, message: 'API activa', time: new Date().toISOString() };
+    return callback ? jsonpResponse(out, callback) : jsonResponse(out);
+  } catch (err) {
+    const out = { ok: false, error: String(err && err.stack ? err.stack : err) };
+    const callback = e && e.parameter && e.parameter.callback;
+    return callback ? jsonpResponse(out, callback) : jsonResponse(out);
+  }
 }
 
 function doPost(e) {
@@ -37,6 +49,7 @@ function doPost(e) {
 }
 
 function parseBody_(e) {
+  if (e && e.parameter && e.parameter.payload) return JSON.parse(e.parameter.payload);
   if (!e || !e.postData || !e.postData.contents) return {};
   return JSON.parse(e.postData.contents);
 }
@@ -45,6 +58,15 @@ function jsonResponse(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function jsonpResponse(obj, callback) {
+  const cb = String(callback || '').replace(/[^A-Za-z0-9_.$]/g, '');
+  if (!cb) return jsonResponse({ ok:false, error:'Callback inválido' });
+  const json = JSON.stringify(obj).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  return ContentService
+    .createTextOutput(cb + '(' + json + ');')
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
 function handlePing_() {

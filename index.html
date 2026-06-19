@@ -627,13 +627,70 @@ function scheduleSheetsSync(){
   clearTimeout(sheetsSyncTimer);
   sheetsSyncTimer = setTimeout(() => sincronizarSheets(false), 2500);
 }
-async function sheetsRequest(action, payload={}){
+function sheetsJsonp(action, payload={}, timeoutMs=20000){
+  const baseUrl = getSheetsApiUrl();
+  if (!baseUrl) return Promise.reject(new Error('Falta configurar el link API /exec de Apps Script.'));
+  return new Promise((resolve, reject) => {
+    const cbName = '__rutinaSheetsCb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    const sep = baseUrl.includes('?') ? '&' : '?';
+    const params = new URLSearchParams({ action, callback: cbName, _: String(Date.now()) });
+    Object.entries(payload || {}).forEach(([k,v]) => {
+      if (v === undefined || v === null) return;
+      if (typeof v === 'object') params.set(k, JSON.stringify(v));
+      else params.set(k, String(v));
+    });
+    let done = false;
+    const cleanup = () => {
+      try { delete window[cbName]; } catch(_) { window[cbName] = undefined; }
+      script.remove();
+    };
+    const timer = setTimeout(() => {
+      if (done) return; done = true; cleanup();
+      reject(new Error('No respondió Apps Script. Revisá que esté implementado como Aplicación web, con acceso Cualquier persona, y que el link termine en /exec.'));
+    }, timeoutMs);
+    window[cbName] = (data) => {
+      if (done) return; done = true; clearTimeout(timer); cleanup(); resolve(data || { ok:false, error:'Respuesta vacía' });
+    };
+    script.onerror = () => {
+      if (done) return; done = true; clearTimeout(timer); cleanup();
+      reject(new Error('No se pudo conectar con Apps Script. Probá implementar de nuevo y copiar el link /exec.'));
+    };
+    script.src = baseUrl + sep + params.toString();
+    document.body.appendChild(script);
+  });
+}
+function sheetsPostNoCors(action, payload={}){
   const url = getSheetsApiUrl();
-  if (!url) throw new Error('Falta configurar el link API /exec de Apps Script.');
-  const res = await fetch(url, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
-  const txt = await res.text();
-  try { return JSON.parse(txt); }
-  catch(e) { return { ok:false, error:'Respuesta no JSON: ' + txt.slice(0,220) }; }
+  if (!url) return Promise.reject(new Error('Falta configurar el link API /exec de Apps Script.'));
+  return new Promise((resolve, reject) => {
+    try {
+      const frameName = 'rutina_sheets_iframe_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const iframe = document.createElement('iframe');
+      iframe.name = frameName;
+      iframe.style.display = 'none';
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = url;
+      form.target = frameName;
+      form.style.display = 'none';
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'payload';
+      input.value = JSON.stringify({ action, ...payload });
+      form.appendChild(input);
+      document.body.appendChild(iframe);
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => { form.remove(); iframe.remove(); resolve({ ok:true, submitted:true }); }, 1800);
+    } catch(e) { reject(e); }
+  });
+}
+async function sheetsRequest(action, payload={}){
+  // Apps Script puede bloquear fetch por CORS desde GitHub Pages.
+  // Para leer usamos JSONP. Para guardar usamos un POST por formulario oculto.
+  if (action === 'syncAll') return sheetsPostNoCors(action, payload);
+  return sheetsJsonp(action, payload);
 }
 function dumpLocalStorageRutina(){
   const out = {};
@@ -699,8 +756,8 @@ async function sincronizarSheets(showNotif=true){
       guardarJSON(storageKey('sheetsLastSync'), now);
       window.__SHEETS_SUSPEND_SYNC = false;
       actualizarSheetsUI();
-      setSheetsStatus('Sincronizado OK. Se actualizaron las pestañas del sistema en tu Google Sheet.', 'ok');
-      if (showNotif) mostrarNotif('Sincronizado con Google Sheets.');
+      setSheetsStatus('Datos enviados a Google Sheets. Abrí la planilla y revisá que se hayan actualizado las pestañas.', 'ok');
+      if (showNotif) mostrarNotif('Datos enviados a Google Sheets.');
     } else {
       setSheetsStatus('Error al sincronizar: ' + (r.error || 'sin detalle'), 'err');
       if (showNotif) mostrarNotif('No se pudo sincronizar.');
